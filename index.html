@@ -370,10 +370,8 @@ var AvliCore = (function () {
       return { invites: list, left: me.is_admin ? 999 : me.invites_left };
     }
     if (path === "invite" && method === "POST") {
-      if (!me.is_admin && me.invites_left <= 0) throw E(400, "Δεν σου απομένουν άλλες προσκλήσεις.");
       var nc = newCode();
       await run(db, "INSERT INTO invites(code,created_by,created) VALUES(?,?,?)", [nc, me.id, now]);
-      if (!me.is_admin) await run(db, "UPDATE members SET invites_left=invites_left-1 WHERE id=?", [me.id]);
       return { code: nc };
     }
     if (path === "feed") {
@@ -527,7 +525,7 @@ var AvliCore = (function () {
 </script>
 <script>
 "use strict";
-var VERSION = "27-11-2026 18:36";
+var VERSION = "27-11-2026 18:39";
 var DAY = 86400000;
 var S = { mode: "live", me: null, view: "avli", ping: null, filters: { avli: "", market: "", cat: "", search: "", area: "" }, draft: null };
 var $app = document.getElementById("app"), $nav = document.getElementById("nav"), $layer = document.getElementById("layer");
@@ -861,7 +859,7 @@ function renderInfo() {
   h += sec("🧺", "Το παζάρι της παρέας στην αυλή μας", '<p>Τέσσερις επιλογές: <b>🏷️ Πουλάω, 🔍 Ψάχνω, 🎁 Χαρίζω, 🙋 Χρειάζομαι</b>. Υπάρχουν κατηγορίες (σπίτια, διαμερίσματα, οικόπεδα, χωράφια, έπιπλα, είδη σπιτιού κ.ά.) και αναζήτηση.</p><p>Με το «✉️ Μήνυμα» μιλάς ιδιωτικά με τον κάτοχο της αγγελίας. <b>Τα χρήματα δεν περνούν από την Αυλή.</b> Συμφωνείτε απευθείας μεταξύ σας.</p>');
   h += sec("🛡️", "Ασφάλεια στις ανταλλαγές", '<ul style="padding-left:22px"><li>Ποτέ προκαταβολή σε άγνωστο.</li><li>Συνάντηση σε δημόσιο χώρο, καλύτερα με συνοδεία.</li><li>Για ακίνητα: πρώτα έλεγχος τίτλου στο Κτηματολόγιο και δικηγόρος, μετά οποιαδήποτε πληρωμή.</li><li>Ποτέ κωδικούς τράπεζας ή στοιχεία κάρτας σε μήνυμα.</li><li>Αν κάτι φαίνεται πολύ καλό για να είναι αληθινό, μάλλον δεν είναι.</li></ul>');
   h += sec("⏳", "Γιατί σβήνονται όλα σε 30 ημέρες", '<p>Για να μένει η Αυλή ελαφριά, καθαρή και επίκαιρη. Τρεις ημέρες πριν σβηστεί κάτι δικό σου, βλέπεις ειδοποίηση και μπορείς να πατήσεις <b>«Ανανέωση»</b> για άλλες 30 ημέρες. Τα μηνύματα σβήνονται κι αυτά μετά από 30 ημέρες.</p><p class="hint">Κράτα πάντα τα πρωτότυπα των φωτογραφιών σου στο κινητό σου.</p>');
-  h += sec("🎟️", "Προσκλήσεις", '<p>Κάθε μέλος έχει <b>3 προσκλήσεις</b>. Στο «🙂 Εγώ» πατάς «Νέα πρόσκληση» και τη στέλνεις με Viber, WhatsApp ή μήνυμα. Κάλεσε μόνο ανθρώπους που εμπιστεύεσαι· η Αυλή θυμάται ποιος κάλεσε ποιον.</p>');
+  h += sec("🎟️", "Προσκλήσεις", '<p>Κάθε μέλος μπορεί να στείλει <b>όσες προσκλήσεις θέλει</b>. Στο «🙂 Εγώ» πατάς «Νέα πρόσκληση» και τη στέλνεις με Viber, WhatsApp ή μήνυμα. Κάλεσε μόνο ανθρώπους που εμπιστεύεσαι· η Αυλή θυμάται ποιος κάλεσε ποιον.</p>');
   h += sec("🔑", "Χρειάζομαι κωδικό;", '<p><b>Όχι.</b> Πατάς τον σύνδεσμο της πρόσκλησης, γράφεις το όνομά σου και μπαίνεις. Το κινητό σου σε θυμάται από εκεί και πέρα· δεν χρειάζεσαι κωδικό ούτε email.</p><p>Αν αλλάξεις κινητό, ζήτα από τον διαχειριστή να σου δώσει ένα κλειδί εισόδου και γράψ\' το στο «Μου έδωσε κλειδί ο διαχειριστής».</p>');
   h += sec("⚠️", "Κάτι ακατάλληλο;", '<p>Πατάς τις <b>⋯</b> στην ανάρτηση και μετά «Ανάφερε στον διαχειριστή». Αν τρία μέλη αναφέρουν την ίδια ανάρτηση, κρύβεται αμέσως μέχρι να την ελέγξει ο διαχειριστής.</p>');
   h += sec("🔒", "Ιδιωτικότητα", '<p>Ό,τι ανεβάζεις το βλέπουν <b>μόνο τα μέλη</b> της Αυλής. Μπορείς να σβήσεις οποιαδήποτε δική σου ανάρτηση ή σχόλιο όποτε θέλεις. Η Αυλή δεν ζητά τηλέφωνο, διεύθυνση ή email και δεν πουλά ούτε δίνει πουθενά τα στοιχεία σου.</p>');
@@ -1213,8 +1211,8 @@ async function renderMe() {
     '<label>Περιοχή</label><input type="text" id="parea" maxlength="60" value="' + esc(me.area || "") + '" placeholder="π.χ. Πάφος">' +
     '<label>Λίγα λόγια για μένα</label><textarea id="pabout" maxlength="300" style="min-height:90px">' + esc(me.about || "") + '</textarea>' +
     '<button class="btn big olive" onclick="saveProfile()">Αποθήκευση</button></div>';
-  h += '<div class="card"><h2 style="margin-top:0">🎟️ Προσκλήσεις</h2><p>Κάλεσε ανθρώπους που εμπιστεύεσαι. ' + (me.is_admin ? "Ως διαχειριστής έχεις απεριόριστες." : "Σου απομένουν <b>" + me.invites_left + "</b>.") + '</p>' +
-    '<button class="btn big sun" onclick="newInvite()" ' + (!me.is_admin && me.invites_left <= 0 ? "disabled" : "") + '>➕ Νέα πρόσκληση</button><div id="invlist"></div></div>';
+  h += '<div class="card"><h2 style="margin-top:0">🎟️ Προσκλήσεις</h2><p>Κάλεσε ανθρώπους που εμπιστεύεσαι, όσους θέλεις.</p>' +
+    '<button class="btn big sun" onclick="newInvite()">➕ Νέα πρόσκληση</button><div id="invlist"></div></div>';
   h += '<div class="card"><h2 style="margin-top:0">📝 Οι αναρτήσεις μου</h2><div id="mine"><div class="hint">Φορτώνει…</div></div></div>';
   h += '<div class="card"><h2 style="margin-top:0">⚙️ Ρυθμίσεις</h2>' + (me.is_admin ? '<button class="btn big ghost" onclick="showKey(false)">🔑 Ο κωδικός μου (δες ή άλλαξέ τον)</button>' : "") +
     '<details style="margin-top:10px"><summary><b>Οι κανόνες της Αυλής</b></summary>' + rulesHtml() + '</details>' +
@@ -1277,8 +1275,8 @@ async function renderAdmin() {
     h += '</div><div class="card"><h2 style="margin-top:0">👥 Μέλη (' + r.members.length + ')</h2>';
     h += r.members.map(function (m) {
       return '<div class="cm"><b>' + esc(m.name) + '</b> ' + flag(m.country) + (m.is_admin ? " 👑" : "") + (m.banned ? ' <span class="badge" style="background:#D9534F">αποκλεισμένο</span>' : "") +
-        '<div class="hint">' + (m.invited_by_name ? "Κάλεσμα από: " + esc(m.invited_by_name) + " · " : "") + m.posts + ' αναρτήσεις · προσκλήσεις: ' + (m.is_admin ? "∞" : m.invites_left) + '</div>' +
-        (m.is_admin ? "" : '<div class="row" style="margin-top:8px"><button class="btn small sun" onclick="adm(\'gift\',\'' + m.id + '\')">+3 προσκλήσεις</button><button class="btn small sky" onclick="admKey(\'' + m.id + '\')">🔑 Νέο κλειδί</button><button class="btn small ' + (m.banned ? "olive" : "") + '" onclick="admBan(\'' + m.id + '\',' + (m.banned ? 0 : 1) + ')">' + (m.banned ? "Επαναφορά" : "🚫 Αποκλεισμός") + '</button></div>') + '</div>';
+        '<div class="hint">' + (m.invited_by_name ? "Κάλεσμα από: " + esc(m.invited_by_name) + " · " : "") + m.posts + ' αναρτήσεις' + '</div>' +
+        (m.is_admin ? "" : '<div class="row" style="margin-top:8px"><button class="btn small sky" onclick="admKey(\'' + m.id + '\')">🔑 Νέο κλειδί</button><button class="btn small ' + (m.banned ? "olive" : "") + '" onclick="admBan(\'' + m.id + '\',' + (m.banned ? 0 : 1) + ')">' + (m.banned ? "Επαναφορά" : "🚫 Αποκλεισμός") + '</button></div>') + '</div>';
     }).join("") + '</div>' + footer();
     $app.innerHTML = h;
   } catch (e) { toast(e.message); }

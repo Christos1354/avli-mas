@@ -246,10 +246,8 @@ var AvliCore = (function () {
       return { invites: list, left: me.is_admin ? 999 : me.invites_left };
     }
     if (path === "invite" && method === "POST") {
-      if (!me.is_admin && me.invites_left <= 0) throw E(400, "Δεν σου απομένουν άλλες προσκλήσεις.");
       var nc = newCode();
       await run(db, "INSERT INTO invites(code,created_by,created) VALUES(?,?,?)", [nc, me.id, now]);
-      if (!me.is_admin) await run(db, "UPDATE members SET invites_left=invites_left-1 WHERE id=?", [me.id]);
       return { code: nc };
     }
     if (path === "feed") {
