@@ -521,7 +521,7 @@ var AvliCore = (function () {
 </script>
 <script>
 "use strict";
-var VERSION = "27-11-2026 15:24";
+var VERSION = "27-11-2026 18:21";
 var DAY = 86400000;
 var S = { mode: "live", me: null, view: "avli", ping: null, filters: { avli: "", market: "", cat: "", search: "", area: "" }, draft: null };
 var $app = document.getElementById("app"), $nav = document.getElementById("nav"), $layer = document.getElementById("layer");
@@ -577,31 +577,31 @@ function drawLangs(f) {
   }).join("");
 }
 function setLang(c) { store("avli_lang", c); location.reload(); }
-var TR = { cache: {}, pending: {}, busy: false, t: null, warned: false };
+var TR = { cache: {}, pending: {}, busy: false, t: null, warned: false, off: false, failed: {} };
 if (LANG !== "el") { TR.cache = load("avli_tr_" + LANG) || {}; }
-function T(s) { if (LANG === "el") return s; if (TR.cache[s]) return TR.cache[s]; TR.pending[s] = 1; scheduleTr(); return s; }
+function T(s) { if (LANG === "el") return s; if (TR.cache[s]) return TR.cache[s]; if (!TR.off && !TR.failed[s]) { TR.pending[s] = 1; scheduleTr(); } return s; }
 function hasGreek(s) { return /[Ͱ-Ͽἀ-῿]/.test(s); }
 function skipNode(el) { return !el || el.closest("[data-u],textarea,script,style,input"); }
 function trPass() {
-  if (LANG === "el") return;
+  if (LANG === "el" || TR.off) return;
   var w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT), n;
   while ((n = w.nextNode())) {
     if (skipNode(n.parentElement)) continue;
     if (n.__o === undefined) { if (!hasGreek(n.nodeValue)) continue; n.__o = n.nodeValue; }
     var k = n.__o.trim(); if (!k) continue;
-    if (TR.cache[k]) { var v = n.__o.replace(k, TR.cache[k]); if (n.nodeValue !== v) n.nodeValue = v; } else TR.pending[k] = 1;
+    if (TR.cache[k]) { var v = n.__o.replace(k, TR.cache[k]); if (n.nodeValue !== v) n.nodeValue = v; } else if (!TR.failed[k]) TR.pending[k] = 1;
   }
   document.querySelectorAll("[placeholder],[title]").forEach(function (el) {
     if (el.closest("[data-u]")) return;
     ["placeholder", "title"].forEach(function (a) {
       var o = el.getAttribute("data-o-" + a) || el.getAttribute(a); if (!o || !hasGreek(o)) return;
       el.setAttribute("data-o-" + a, o);
-      if (TR.cache[o]) el.setAttribute(a, TR.cache[o]); else TR.pending[o] = 1;
+      if (TR.cache[o]) el.setAttribute(a, TR.cache[o]); else if (!TR.failed[o]) TR.pending[o] = 1;
     });
   });
   if (Object.keys(TR.pending).length) fetchTr();
 }
-function scheduleTr() { if (LANG === "el") return; clearTimeout(TR.t); TR.t = setTimeout(trPass, 40); }
+function scheduleTr() { if (LANG === "el" || TR.off) return; clearTimeout(TR.t); TR.t = setTimeout(trPass, 40); }
 async function fetchTr() {
   if (TR.busy) return; TR.busy = true;
   try {
@@ -612,15 +612,16 @@ async function fetchTr() {
       var r = await api("translate", { body: { texts: batch, target: LANG } });
       if (r.off || r.limit) {
         if (!TR.warned) { TR.warned = true; toast(S.mode === "demo" ? "🌐 Η μετάφραση θα λειτουργεί όταν η Αυλή ανέβει στο διαδίκτυο." : "🌐 Η μετάφραση δεν είναι διαθέσιμη αυτή τη στιγμή."); }
-        batch.forEach(function (k, i) { if (r.translations[i] !== k) TR.cache[k] = r.translations[i]; });
+        batch.forEach(function (k, i) { if (r.translations[i] !== k) TR.cache[k] = r.translations[i]; else TR.failed[k] = 1; });
+        TR.off = true; TR.pending = {};
         break;
       }
       batch.forEach(function (k, i) { TR.cache[k] = r.translations[i]; });
     }
     var j = JSON.stringify(TR.cache); if (j.length > 1500000) { TR.cache = {}; j = "{}"; }
     try { localStorage.setItem("avli_tr_" + LANG, j); } catch (e) { }
-  } catch (e) { }
-  TR.busy = false; trPass();
+  } catch (e) { TR.off = true; TR.pending = {}; }
+  TR.busy = false; if (!TR.off) setTimeout(trPass, 50);
 }
 async function translatePost(id, btn) {
   var card = document.getElementById("p_" + id); if (!card) return;
@@ -781,7 +782,13 @@ async function boot() {
   if (["ar", "he", "fa", "ur"].indexOf(LANG) >= 0) document.documentElement.dir = "rtl";
   if (LANG !== "el") { new MutationObserver(scheduleTr).observe(document.body, { childList: true, subtree: true }); }
   var live = location.protocol === "http:" || location.protocol === "https:";
-  if (live) { try { S.ping = await api("ping"); } catch (e) { live = false; } }
+  if (live) {
+    try { S.ping = await api("ping"); }
+    catch (e) {
+      if (e.status) { $app.innerHTML = '<div class="card" style="text-align:center"><div style="font-size:3em">🔧</div><h2>Η Αυλή ετοιμάζεται</h2><p>' + esc(e.message) + '</p><p class="hint">Για τον διαχειριστή: έλεγξε τις ρυθμίσεις στο Cloudflare και κάνε νέα δημοσίευση.</p></div>'; return; }
+      live = false;
+    }
+  }
   if (!live) {
     S.mode = "demo";
     try { await startDemo(); S.ping = await api("ping"); }
