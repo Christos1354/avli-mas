@@ -76,9 +76,14 @@ var AvliCore = (function () {
       q(db, "DELETE FROM requests WHERE status != 'pending' AND created < ?", [now - LIFE])
     ]);
   }
+  var ADMIN = "";
+  function pk(s) { return String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ").trim().toUpperCase(); }
   async function who(db, key) {
     if (!key) return null;
-    var m = await first(db, "SELECT * FROM members WHERE keyhash=?", [await hash(key)]);
+    var m = null;
+    if (ADMIN && pk(key) === pk(ADMIN)) m = await first(db, "SELECT * FROM members WHERE is_admin=1 ORDER BY created LIMIT 1");
+    if (!m) m = await first(db, "SELECT * FROM members WHERE keyhash=?", [await hash(pk(key))]);
+    if (!m) m = await first(db, "SELECT * FROM members WHERE keyhash=?", [await hash(key)]);
     if (m && m.banned) throw E(403, "Ο λογαριασμός σου έχει απενεργοποιηθεί.");
     return m;
   }
@@ -87,7 +92,7 @@ var AvliCore = (function () {
   async function createMember(db, name, invitedBy, isAdmin, now, country) {
     var key = newKey(), id = rnd(10);
     await run(db, "INSERT INTO members(id,name,keyhash,invited_by,is_admin,invites_left,created,country) VALUES(?,?,?,?,?,?,?,?)",
-      [id, name, await hash(key), invitedBy || null, isAdmin ? 1 : 0, 3, now, cc(country)]);
+      [id, name, await hash(pk(key)), invitedBy || null, isAdmin ? 1 : 0, 3, now, cc(country)]);
     return { id: id, key: key };
   }
 
@@ -112,6 +117,7 @@ var AvliCore = (function () {
 
   // ---------------- ΚΥΡΙΑ ΣΥΝΑΡΤΗΣΗ ----------------
   async function handle(method, path, body, key, env, query) {
+    ADMIN = env.ADMIN_CODE ? String(env.ADMIN_CODE) : "";
     var db = env.DB; if (!db) throw E(500, "Λείπει η βάση δεδομένων (DB) από τις ρυθμίσεις του Cloudflare.");
     body = body || {}; query = query || {};
     var now = env.now || Date.now();
@@ -224,7 +230,7 @@ var AvliCore = (function () {
     if (path === "setkey" && method === "POST") {
       var nk2 = str(body.key, 60);
       if (nk2.length < 8) throw E(400, "Το κλειδί θέλει τουλάχιστον 8 γράμματα ή αριθμούς.");
-      var h2 = await hash(nk2);
+      var h2 = await hash(pk(nk2));
       var taken = await first(db, "SELECT id FROM members WHERE keyhash=?", [h2]);
       if (taken && taken.id !== me.id) throw E(400, "Διάλεξε κάτι πιο προσωπικό, αυτό δεν γίνεται.");
       await run(db, "UPDATE members SET keyhash=? WHERE id=?", [h2, me.id]);
@@ -386,7 +392,7 @@ var AvliCore = (function () {
       if (path === "admin/ban") { await run(db, "UPDATE members SET banned=? WHERE id=? AND is_admin=0", [body.on ? 1 : 0, target]); return { ok: true }; }
       if (path === "admin/gift") { await run(db, "UPDATE members SET invites_left=invites_left+3 WHERE id=?", [target]); return { ok: true }; }
       if (path === "admin/newkey") {
-        var nk = newKey(); await run(db, "UPDATE members SET keyhash=? WHERE id=? AND is_admin=0", [await hash(nk), target]); return { key: nk };
+        var nk = newKey(); await run(db, "UPDATE members SET keyhash=? WHERE id=? AND is_admin=0", [await hash(pk(nk)), target]); return { key: nk };
       }
     }
     throw E(404, "Άγνωστη ενέργεια.");
