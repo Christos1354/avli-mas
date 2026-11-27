@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#E2725B">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Η Αυλή μας">
+<title>Η Αυλή μας</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏡</text></svg>">
+<style>
+:root{--terra:#E2725B;--sun:#F4B942;--olive:#6E9B4A;--sky:#4A9BCB;--plum:#9B5D8E;--cream:#FFF8EC;--card:#FFFFFF;--ink:#3B2F2A;--soft:#7A6A60;--line:#F0E2CC}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--cream);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans",Arial,sans-serif;font-size:20px;line-height:1.5}
+body{padding-bottom:110px}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--sky)}
+header{position:sticky;top:0;z-index:20;background:linear-gradient(135deg,var(--terra),#EE9A5B);color:#fff;padding:14px 18px calc(14px);padding-top:calc(14px + env(safe-area-inset-top));display:flex;align-items:center;gap:12px;box-shadow:0 3px 12px rgba(160,70,40,.25)}
+header h1{margin:0;font-size:1.35em;flex:1;font-weight:800;letter-spacing:.3px}
+header .sub{font-size:.7em;opacity:.95;font-weight:500;display:block}
+header h1{white-space:normal;min-width:0;line-height:1.15}header .sub{white-space:normal}header button{flex:none}
+@media (max-width:440px){header{padding-left:12px;padding-right:12px;gap:8px}header h1{font-size:1.15em}header .sub{font-size:.68em}header>div{font-size:1.6em!important}}
+main{max-width:720px;margin:0 auto;padding:16px 14px}
+.demo{background:#FFF1B8;border:2px dashed var(--sun);border-radius:16px;padding:10px 14px;margin-bottom:14px;font-size:.85em}
+.card{background:var(--card);border-radius:22px;padding:18px;margin:0 0 16px;box-shadow:0 2px 10px rgba(120,80,40,.08);border:1px solid var(--line)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:16px;padding:14px 20px;font-weight:700;cursor:pointer;background:var(--terra);color:#fff;min-height:56px;box-shadow:0 2px 0 rgba(0,0,0,.12)}
+.btn:active{transform:translateY(1px)}
+.btn.big{width:100%;font-size:1.1em;margin:8px 0}
+.btn.sun{background:var(--sun);color:#4a3300}.btn.olive{background:var(--olive)}.btn.sky{background:var(--sky)}.btn.plum{background:var(--plum)}
+.btn.ghost{background:#F6EBDA;color:var(--ink);box-shadow:none}
+.btn.small{min-height:44px;padding:8px 14px;font-size:.85em;border-radius:12px}
+.btn:disabled{opacity:.5}
+label{display:block;font-weight:700;margin:14px 0 6px}
+input[type=text],input[type=url],textarea,select{width:100%;padding:14px;border-radius:14px;border:2px solid var(--line);background:#FFFDF8;font-size:1em}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--sun)}
+textarea{min-height:130px;resize:vertical}
+.hint{color:var(--soft);font-size:.82em}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0}
+.chip{border:2px solid var(--line);background:#fff;border-radius:999px;padding:8px 14px;cursor:pointer;font-weight:600;font-size:.9em}
+.chip.on{background:var(--sun);border-color:var(--sun);color:#4a3300}
+.post-head{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.avatar{width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:1.2em;flex:none;cursor:pointer}
+.who{font-weight:800;cursor:pointer}.when{color:var(--soft);font-size:.8em}
+.badge{display:inline-block;border-radius:999px;padding:3px 12px;font-size:.78em;font-weight:800;color:#fff;background:var(--sky)}
+.b-Πουλάω{background:var(--terra)}.b-Ψάχνω{background:var(--sky)}.b-Χαρίζω{background:var(--olive)}.b-Χρειάζομαι{background:var(--plum)}
+.b-Ποίημα{background:var(--plum)}.b-Ιστορία{background:#C0763F}.b-Σκέψη{background:var(--sky)}.b-Φωτογραφίες{background:var(--olive)}.b-Βίντεο{background:#D9534F}.b-Συνταγή{background:#E0A030}
+.title{font-size:1.2em;font-weight:800;margin:8px 0 4px}
+.body{white-space:pre-wrap;word-wrap:break-word}
+.poem{font-family:Georgia,"Times New Roman",serif;font-style:italic;text-align:center;font-size:1.08em;background:#FBF3FF;border-radius:16px;padding:16px}
+.price{font-size:1.35em;font-weight:900;color:var(--terra)}
+.photos{display:grid;gap:6px;margin:12px 0;border-radius:16px;overflow:hidden}
+.photos.n1{grid-template-columns:1fr}.photos.n2,.photos.n4{grid-template-columns:1fr 1fr}.photos.n3{grid-template-columns:1fr 1fr 1fr}
+.photos img{width:100%;height:100%;max-height:520px;object-fit:cover;display:block;cursor:zoom-in;background:#eee}
+.photos.n2 img,.photos.n3 img,.photos.n4 img{aspect-ratio:1}
+.yt{position:relative;margin:12px 0;border-radius:16px;overflow:hidden;aspect-ratio:16/9;background:#000;cursor:pointer}
+.yt img{width:100%;height:100%;object-fit:cover;opacity:.85}
+.yt .play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:3.2em}
+.yt iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;border-top:1px solid var(--line);padding-top:12px}
+.act{flex:1;min-width:84px;border:0;background:#FBF3E6;border-radius:14px;padding:10px;font-weight:700;cursor:pointer;min-height:52px}
+.act.on{background:#FFE1D8;color:#B3412A}
+.act.candle.on{background:#FFF0C2;color:#8A6100}
+.comments{margin-top:10px}
+.cm{background:#FBF6EE;border-radius:14px;padding:10px 12px;margin:8px 0}
+.cm b{cursor:pointer}
+.expire{background:#FFF1B8;border-radius:12px;padding:6px 12px;font-size:.82em;margin-top:8px;display:inline-block}
+nav{position:fixed;left:0;right:0;bottom:0;z-index:30;background:#fff;border-top:2px solid var(--line);display:flex;justify-content:space-around;padding:6px 4px calc(6px + env(safe-area-inset-bottom));box-shadow:0 -3px 14px rgba(120,80,40,.1)}
+nav button{flex:1;border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:.72em;font-weight:700;color:var(--soft);padding:6px 2px;border-radius:14px;cursor:pointer;position:relative;max-width:120px}
+nav button .ic{font-size:1.9em;line-height:1.1}
+nav button.on{color:var(--terra);background:#FFF1E8}
+nav button.plus .ic{background:var(--terra);color:#fff;border-radius:50%;width:54px;height:54px;display:flex;align-items:center;justify-content:center;margin-top:-26px;box-shadow:0 4px 12px rgba(226,114,91,.5)}
+.dot{position:absolute;top:2px;right:18%;background:#D9534F;color:#fff;border-radius:999px;font-size:.85em;min-width:22px;height:22px;display:flex;align-items:center;justify-content:center;padding:0 5px}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:8px}
+.tabs .chip{white-space:nowrap}
+.tips{background:#EAF6E0;border:2px solid #CFE6BB}
+.tips summary{font-weight:800;cursor:pointer}
+.tips li{margin:6px 0}
+.hero{text-align:center;padding:26px 10px 6px}
+.hero .sunny{font-size:4.5em}
+.hero h2{font-size:1.8em;margin:4px 0;color:var(--terra)}
+.keybox{font-family:ui-monospace,Menlo,monospace;font-size:1.25em;font-weight:800;background:#FFF1B8;border-radius:14px;padding:14px;text-align:center;letter-spacing:1px;user-select:all;word-break:break-all}
+.modal{position:fixed;inset:0;background:rgba(40,25,15,.6);z-index:50;display:flex;align-items:center;justify-content:center;padding:16px}
+.modal .card{max-width:560px;width:100%;max-height:90vh;overflow:auto;margin:0}
+.viewer{position:fixed;inset:0;background:#000;z-index:60;display:flex;align-items:center;justify-content:center}
+.viewer img{max-width:100%;max-height:100%}
+.viewer .x{position:absolute;top:calc(14px + env(safe-area-inset-top));right:14px;font-size:1.6em;background:#fff;border:0;border-radius:50%;width:56px;height:56px}
+.toast{position:fixed;left:50%;bottom:120px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:14px 22px;border-radius:16px;z-index:70;max-width:90%;text-align:center;font-weight:600}
+.conv{display:flex;gap:12px;align-items:center;cursor:pointer}
+.bubble{max-width:82%;padding:10px 14px;border-radius:18px;margin:6px 0;white-space:pre-wrap;word-wrap:break-word}
+.bubble.mine{background:#FFE1D8;margin-left:auto;border-bottom-right-radius:6px}
+.bubble.them{background:#fff;border:1px solid var(--line);border-bottom-left-radius:6px}
+.bubble .t{font-size:.7em;color:var(--soft);display:block}
+.thumbs{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.thumbs div{position:relative}
+.thumbs img{width:90px;height:90px;object-fit:cover;border-radius:12px}
+.thumbs button{position:absolute;top:-8px;right:-8px;border:0;background:#D9534F;color:#fff;border-radius:50%;width:32px;height:32px;font-weight:900}
+.empty{text-align:center;color:var(--soft);padding:30px 10px}
+.empty .e{font-size:3em}
+footer{text-align:center;font-size:.72em;color:var(--soft);padding:20px 10px 10px}
+footer a{color:var(--soft)}
+.menu{position:relative}
+.big-choice{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.big-choice button{min-height:120px;flex-direction:column;font-size:1em}
+.big-choice .ic{font-size:2em}
+hr{border:0;border-top:1px solid var(--line);margin:16px 0}
+.hbtn{border:0;background:rgba(255,255,255,.95);border-radius:50%;width:52px;height:52px;font-size:1.4em;cursor:pointer;flex:none;box-shadow:0 2px 6px rgba(0,0,0,.12)}
+.trbtn{border:0;background:none;color:var(--sky);font-weight:700;cursor:pointer;padding:6px 0;font-size:.85em}
+.invite{text-align:center;background:linear-gradient(160deg,#FFF6E0,#FFE6DA);border:2px solid #F7D9B5}
+.invite .bigic{font-size:4em;line-height:1.1}
+</style>
+</head>
+<body>
+<header>
+  <div style="font-size:2em;cursor:pointer" onclick="goHome()" title="Αρχή">🏡</div>
+  <h1 style="cursor:pointer" onclick="goHome()"><span id="htitle">Η Αυλή μας</span><span class="sub" id="hsub">ένας ζεστός κύκλος φίλων</span></h1>
+  <button class="hbtn" onclick="pickLang()" title="Γλώσσα">🌐</button>
+  <button class="hbtn" onclick="openInfo()" title="Οδηγός">ℹ️</button>
+</header>
+<main id="app"><div class="empty"><div class="e">🌻</div>Φορτώνει…</div></main>
+<nav id="nav" style="display:none"></nav>
+<div id="layer"></div>
+
+<script>
+// ===== Η Αυλή μας — κοινός πυρήνας (διακομιστής + δοκιμαστική λειτουργία) =====
+var AvliCore = (function () {
+  var DAY = 86400000, LIFE = 30 * DAY;
+  var SCHEMA = [
+    "CREATE TABLE IF NOT EXISTS members(id TEXT PRIMARY KEY, name TEXT, keyhash TEXT UNIQUE, invited_by TEXT, is_admin INTEGER DEFAULT 0, invites_left INTEGER DEFAULT 3, banned INTEGER DEFAULT 0, area TEXT DEFAULT '', about TEXT DEFAULT '', created INTEGER, country TEXT DEFAULT 'CY')",
+    "CREATE TABLE IF NOT EXISTS invites(code TEXT PRIMARY KEY, created_by TEXT, used_by TEXT, created INTEGER, used INTEGER)",
+    "CREATE TABLE IF NOT EXISTS requests(id TEXT PRIMARY KEY, secret TEXT, name TEXT, contact TEXT, message TEXT, status TEXT DEFAULT 'pending', code TEXT, created INTEGER)",
+    "CREATE TABLE IF NOT EXISTS posts(id TEXT PRIMARY KEY, member_id TEXT, section TEXT, kind TEXT, category TEXT, title TEXT, body TEXT, price TEXT, area TEXT, youtube TEXT, hidden INTEGER DEFAULT 0, created INTEGER, expires INTEGER, country TEXT DEFAULT 'CY')",
+    "CREATE TABLE IF NOT EXISTS photos(id TEXT PRIMARY KEY, post_id TEXT, pos INTEGER, data TEXT)",
+    "CREATE TABLE IF NOT EXISTS reactions(post_id TEXT, member_id TEXT, type TEXT, PRIMARY KEY(post_id, member_id, type))",
+    "CREATE TABLE IF NOT EXISTS comments(id TEXT PRIMARY KEY, post_id TEXT, member_id TEXT, body TEXT, created INTEGER)",
+    "CREATE TABLE IF NOT EXISTS messages(id TEXT PRIMARY KEY, from_id TEXT, to_id TEXT, post_id TEXT, body TEXT, created INTEGER, seen INTEGER DEFAULT 0)",
+    "CREATE TABLE IF NOT EXISTS reports(id TEXT PRIMARY KEY, post_id TEXT, member_id TEXT, reason TEXT, created INTEGER, UNIQUE(post_id, member_id))",
+    "CREATE TABLE IF NOT EXISTS meta(k TEXT PRIMARY KEY, v TEXT)",
+    "CREATE TABLE IF NOT EXISTS tr(k TEXT PRIMARY KEY, v TEXT)",
+    "CREATE INDEX IF NOT EXISTS i_posts ON posts(section, created)",
+    "CREATE INDEX IF NOT EXISTS i_posts_c ON posts(country, section, created)",
+    "CREATE INDEX IF NOT EXISTS i_photos ON photos(post_id)",
+    "CREATE INDEX IF NOT EXISTS i_msg ON messages(to_id, from_id)"
+  ];
+  var ready = false;
+  var KINDS_AVLI = ["Σκέψη", "Ποίημα", "Ιστορία", "Φωτογραφίες", "Βίντεο", "Συνταγή", "Άλλο"];
+  var KINDS_MARKET = ["Πουλάω", "Ψάχνω", "Χαρίζω", "Χρειάζομαι"];
+  var CATS = ["Σπίτια", "Διαμερίσματα", "Οικόπεδα", "Χωράφια", "Έπιπλα", "Ηλεκτρικές συσκευές", "Είδη σπιτιού", "Ρούχα", "Βιβλία", "Αυτοκίνητα", "Κήπος", "Υπηρεσίες", "Άλλα"];
+
+  function E(status, msg) { var e = new Error(msg); e.status = status; return e; }
+  function rnd(n, abc) {
+    abc = abc || "abcdefghijkmnpqrstuvwxyz23456789";
+    var a = new Uint8Array(n); crypto.getRandomValues(a);
+    var s = ""; for (var i = 0; i < n; i++) s += abc[a[i] % abc.length]; return s;
+  }
+  function newKey() { var A = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; return "AVLI-" + rnd(4, A) + "-" + rnd(4, A) + "-" + rnd(4, A); }
+  function newCode() { var A = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; return rnd(4, A) + "-" + rnd(4, A); }
+  async function hash(s) {
+    s = String(s || "").trim().toUpperCase();
+    if (typeof crypto !== "undefined" && crypto.subtle) {
+      var b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode("avli:" + s));
+      return Array.prototype.map.call(new Uint8Array(b), function (x) { return ("0" + x.toString(16)).slice(-2); }).join("");
+    }
+    var h1 = 0x811c9dc5, h2 = 0x1234567;
+    for (var i = 0; i < s.length; i++) { h1 = Math.imul(h1 ^ s.charCodeAt(i), 16777619); h2 = Math.imul(h2 ^ s.charCodeAt(i), 2246822519); }
+    return "x" + (h1 >>> 0).toString(16) + (h2 >>> 0).toString(16);
+  }
+  function cc(v, dflt) { v = String(v || "").toUpperCase(); return /^[A-Z]{2}$/.test(v) ? v : (dflt || "CY"); }
+  function str(v, max) { v = (v == null ? "" : String(v)).replace(/\u0000/g, "").trim(); return v.length > max ? v.slice(0, max) : v; }
+  function ytId(u) {
+    u = str(u, 300); if (!u) return "";
+    var m = u.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:.*&)?v=|shorts\/|embed\/|live\/))([A-Za-z0-9_-]{11})/);
+    return m ? m[1] : null;
+  }
+  function q(db, sql, args) { var p = db.prepare(sql); return (args && args.length ? p.bind.apply(p, args) : p); }
+  async function all(db, sql, args) { var r = await q(db, sql, args).all(); return r.results || []; }
+  async function first(db, sql, args) { return await q(db, sql, args).first(); }
+  async function run(db, sql, args) { return await q(db, sql, args).run(); }
+
+  async function init(db) {
+    if (ready) return;
+    var cols = ["ALTER TABLE members ADD COLUMN country TEXT DEFAULT 'CY'", "ALTER TABLE posts ADD COLUMN country TEXT DEFAULT 'CY'"];
+    try { await db.batch(SCHEMA.slice(0, 11).map(function (s) { return db.prepare(s); })); } catch (e) { }
+    for (var i = 0; i < cols.length; i++) { try { await db.prepare(cols[i]).run(); } catch (e) { } }
+    await db.batch(SCHEMA.map(function (s) { return db.prepare(s); }));
+    ready = true;
+  }
+  async function clean(db, now) {
+    var last = await first(db, "SELECT v FROM meta WHERE k='clean'");
+    if (last && now - Number(last.v) < 3600000) return;
+    await run(db, "INSERT OR REPLACE INTO meta(k,v) VALUES('clean',?)", [String(now)]);
+    var old = "SELECT id FROM posts WHERE expires < ?";
+    await db.batch([
+      q(db, "DELETE FROM photos WHERE post_id IN (" + old + ")", [now]),
+      q(db, "DELETE FROM reactions WHERE post_id IN (" + old + ")", [now]),
+      q(db, "DELETE FROM comments WHERE post_id IN (" + old + ")", [now]),
+      q(db, "DELETE FROM reports WHERE post_id IN (" + old + ")", [now]),
+      q(db, "DELETE FROM posts WHERE expires < ?", [now]),
+      q(db, "DELETE FROM messages WHERE created < ?", [now - LIFE]),
+      q(db, "DELETE FROM requests WHERE status != 'pending' AND created < ?", [now - LIFE])
+    ]);
+  }
+  async function who(db, key) {
+    if (!key) return null;
+    var m = await first(db, "SELECT * FROM members WHERE keyhash=?", [await hash(key)]);
+    if (m && m.banned) throw E(403, "Ο λογαριασμός σου έχει απενεργοποιηθεί.");
+    return m;
+  }
+  function pubMe(m) { return { id: m.id, name: m.name, area: m.area, about: m.about, is_admin: !!m.is_admin, country: m.country || "CY", invites_left: m.is_admin ? 999 : m.invites_left, created: m.created }; }
+
+  async function createMember(db, name, invitedBy, isAdmin, now, country) {
+    var key = newKey(), id = rnd(10);
+    await run(db, "INSERT INTO members(id,name,keyhash,invited_by,is_admin,invites_left,created,country) VALUES(?,?,?,?,?,?,?,?)",
+      [id, name, await hash(key), invitedBy || null, isAdmin ? 1 : 0, 3, now, cc(country)]);
+    return { id: id, key: key };
+  }
+
+  async function decorate(db, posts, me) {
+    if (!posts.length) return posts;
+    var ids = posts.map(function (p) { return p.id; });
+    var ph = ids.map(function () { return "?"; }).join(",");
+    var photos = await all(db, "SELECT id, post_id FROM photos WHERE post_id IN (" + ph + ") ORDER BY pos", ids);
+    var reacts = await all(db, "SELECT post_id, type, COUNT(*) n, SUM(CASE WHEN member_id=? THEN 1 ELSE 0 END) mine FROM reactions WHERE post_id IN (" + ph + ") GROUP BY post_id, type", [me.id].concat(ids));
+    var coms = await all(db, "SELECT post_id, COUNT(*) n FROM comments WHERE post_id IN (" + ph + ") GROUP BY post_id", ids);
+    posts.forEach(function (p) {
+      p.photos = photos.filter(function (x) { return x.post_id === p.id; }).map(function (x) { return x.id; });
+      p.heart = 0; p.candle = 0; p.my_heart = false; p.my_candle = false; p.comments = 0;
+      reacts.forEach(function (r) { if (r.post_id === p.id) { p[r.type] = r.n; p["my_" + r.type] = r.mine > 0; } });
+      coms.forEach(function (c) { if (c.post_id === p.id) p.comments = c.n; });
+      p.mine = p.member_id === me.id;
+    });
+    return posts;
+  }
+
+  var POST_COLS = "p.id,p.member_id,p.section,p.kind,p.category,p.title,p.body,p.price,p.area,p.youtube,p.hidden,p.created,p.expires,p.country,m.name author";
+
+  // ---------------- ΚΥΡΙΑ ΣΥΝΑΡΤΗΣΗ ----------------
+  async function handle(method, path, body, key, env, query) {
+    var db = env.DB; if (!db) throw E(500, "Λείπει η βάση δεδομένων (DB) από τις ρυθμίσεις του Cloudflare.");
+    body = body || {}; query = query || {};
+    var now = env.now || Date.now();
+    await init(db);
+    await clean(db, now);
+
+    if (path === "ping") {
+      var c = await first(db, "SELECT COUNT(*) n FROM members");
+      return { ok: true, founded: c.n > 0, kinds: KINDS_AVLI, market: KINDS_MARKET, cats: CATS };
+    }
+    if (path === "setup" && method === "POST") {
+      var c2 = await first(db, "SELECT COUNT(*) n FROM members");
+      if (c2.n > 0) throw E(400, "Η Αυλή έχει ήδη ιδρυθεί.");
+      if (!env.ADMIN_CODE) throw E(400, "Δεν έχει οριστεί ADMIN_CODE στις ρυθμίσεις του Cloudflare.");
+      if (str(body.admin_code, 100) !== String(env.ADMIN_CODE).trim()) throw E(403, "Λάθος κωδικός ιδρυτή.");
+      var nm = str(body.name, 40); if (nm.length < 2) throw E(400, "Γράψε το όνομά σου.");
+      var a = await createMember(db, nm, null, true, now, body.country);
+      return { key: a.key };
+    }
+    if (path === "join" && method === "POST") {
+      var code = str(body.code, 20).toUpperCase();
+      var nm2 = str(body.name, 40);
+      if (nm2.length < 2) throw E(400, "Γράψε το όνομά σου.");
+      if (!body.accept) throw E(400, "Χρειάζεται να αποδεχτείς τους κανόνες της Αυλής.");
+      var inv = await first(db, "SELECT * FROM invites WHERE code=?", [code]);
+      if (!inv) throw E(404, "Η πρόσκληση δεν βρέθηκε. Έλεγξε τον κωδικό.");
+      if (inv.used_by) throw E(400, "Αυτή η πρόσκληση έχει ήδη χρησιμοποιηθεί.");
+      var b = await createMember(db, nm2, inv.created_by, false, now, body.country);
+      await run(db, "UPDATE invites SET used_by=?, used=? WHERE code=?", [b.id, now, code]);
+      return { key: b.key };
+    }
+    if (path === "request" && method === "POST") {
+      var pend = await first(db, "SELECT COUNT(*) n FROM requests WHERE status='pending'");
+      if (pend.n >= 50) throw E(429, "Υπάρχουν πολλές αιτήσεις σε αναμονή. Δοκίμασε ξανά σε λίγες ημέρες.");
+      var rn = str(body.name, 40), rc = str(body.contact, 80), rm = str(body.message, 500);
+      if (rn.length < 2) throw E(400, "Γράψε το όνομά σου.");
+      var rid = rnd(10), sec = rnd(16);
+      await run(db, "INSERT INTO requests(id,secret,name,contact,message,created) VALUES(?,?,?,?,?,?)", [rid, sec, rn, rc, rm, now]);
+      return { id: rid, secret: sec };
+    }
+    if (path === "request-status") {
+      var r = await first(db, "SELECT status, code, secret FROM requests WHERE id=?", [str(query.id, 20)]);
+      if (!r || r.secret !== str(query.secret, 30)) return { status: "missing" };
+      return { status: r.status, code: r.status === "approved" ? r.code : null };
+    }
+    if (path === "login" && method === "POST") {
+      var lm = await who(db, body.key);
+      if (!lm) throw E(404, "Το κλειδί δεν βρέθηκε. Έλεγξε ότι το έγραψες σωστά.");
+      return { me: pubMe(lm) };
+    }
+    if (path === "invite-info") {
+      var ii = await first(db, "SELECT i.used_by, m.name FROM invites i JOIN members m ON m.id=i.created_by WHERE i.code=?", [str(query.code, 20).toUpperCase()]);
+      if (!ii || ii.used_by) return { ok: false };
+      return { ok: true, from: ii.name };
+    }
+    if (path === "translate" && method === "POST") {
+      var target = str(body.target, 10).toLowerCase();
+      var texts = Array.isArray(body.texts) ? body.texts.slice(0, 100).map(function (t) { return str(t, 5000); }) : [];
+      var ugc = !!body.ugc;
+      if (!/^[a-z]{2,3}(-[a-z]{2})?$/i.test(target) || !texts.length) throw E(400, "Λάθος αίτημα μετάφρασης.");
+      if (ugc && !(await who(db, key))) throw E(401, "Χρειάζεται να μπεις στην Αυλή.");
+      if (!ugc) texts = texts.map(function (t) { return t.slice(0, 600); });
+      var out = texts.slice(), miss = [], keys = [];
+      for (var ti = 0; ti < texts.length; ti++) {
+        keys[ti] = target + (ugc ? ":a:" : ":el:") + (await hash(texts[ti])).slice(0, 40);
+        var hit = await first(db, "SELECT v FROM tr WHERE k=?", [keys[ti]]);
+        if (hit) out[ti] = hit.v; else miss.push(ti);
+      }
+      if (!miss.length) return { translations: out };
+      if (!env.TRANSLATE_KEY) return { translations: out, off: true };
+      var chars = miss.reduce(function (a, i) { return a + texts[i].length; }, 0);
+      var day = new Date(now).toISOString().slice(0, 10), dm = await first(db, "SELECT v FROM meta WHERE k='trday'");
+      var used = dm && dm.v.split("|")[0] === day ? Number(dm.v.split("|")[1]) : 0;
+      if (used + chars > 300000) return { translations: out, limit: true };
+      await run(db, "INSERT OR REPLACE INTO meta(k,v) VALUES('trday',?)", [day + "|" + (used + chars)]);
+      var payload = { q: miss.map(function (i) { return texts[i]; }), target: target, format: "text" };
+      if (!ugc) payload.source = "el";
+      var gr = await fetch("https://translation.googleapis.com/language/translate/v2?key=" + encodeURIComponent(env.TRANSLATE_KEY), { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+      if (!gr.ok) return { translations: out, off: true };
+      var gj = await gr.json(), tl = (gj.data && gj.data.translations) || [];
+      var ws = [];
+      miss.forEach(function (i, j) { if (tl[j]) { out[i] = tl[j].translatedText; ws.push(q(db, "INSERT OR REPLACE INTO tr(k,v) VALUES(?,?)", [keys[i], out[i]])); } });
+      if (ws.length) await db.batch(ws);
+      return { translations: out };
+    }
+    if (path === "photo") {
+      var pr = await first(db, "SELECT data FROM photos WHERE id=?", [str(query.id, 20)]);
+      if (!pr) throw E(404, "Η φωτογραφία δεν υπάρχει πια.");
+      return { photo: pr.data };
+    }
+
+    // ----- από εδώ και κάτω μόνο για μέλη -----
+    var me = await who(db, key);
+    if (!me) throw E(401, "Χρειάζεται να μπεις στην Αυλή.");
+
+    if (path === "me") {
+      var unread = await first(db, "SELECT COUNT(*) n FROM messages WHERE to_id=? AND seen=0", [me.id]);
+      var expiring = await all(db, "SELECT id, title, body, section, expires FROM posts WHERE member_id=? AND expires < ? ORDER BY expires", [me.id, now + 3 * DAY]);
+      var out = pubMe(me); out.unread = unread.n; out.expiring = expiring;
+      if (me.is_admin) {
+        var pr2 = await first(db, "SELECT COUNT(*) n FROM requests WHERE status='pending'");
+        var rp = await first(db, "SELECT COUNT(DISTINCT post_id) n FROM reports");
+        out.admin_todo = pr2.n + rp.n;
+      }
+      return out;
+    }
+    if (path === "areas") {
+      return { areas: (await all(db, "SELECT DISTINCT area FROM posts WHERE country=? AND area != '' ORDER BY area", [cc(query.country)])).map(function (r) { return r.area; }) };
+    }
+    if (path === "setkey" && method === "POST") {
+      var nk2 = str(body.key, 60);
+      if (nk2.length < 8) throw E(400, "Το κλειδί θέλει τουλάχιστον 8 γράμματα ή αριθμούς.");
+      var h2 = await hash(nk2);
+      var taken = await first(db, "SELECT id FROM members WHERE keyhash=?", [h2]);
+      if (taken && taken.id !== me.id) throw E(400, "Διάλεξε κάτι πιο προσωπικό, αυτό δεν γίνεται.");
+      await run(db, "UPDATE members SET keyhash=? WHERE id=?", [h2, me.id]);
+      return { ok: true };
+    }
+    if (path === "profile" && method === "POST") {
+      var pn = str(body.name, 40); if (pn.length < 2) throw E(400, "Το όνομα είναι πολύ μικρό.");
+      await run(db, "UPDATE members SET name=?, area=?, about=?, country=? WHERE id=?", [pn, str(body.area, 60), str(body.about, 300), cc(body.country, me.country), me.id]);
+      return { ok: true };
+    }
+    if (path === "invites") {
+      var list = await all(db, "SELECT i.code, i.created, i.used, m.name used_name FROM invites i LEFT JOIN members m ON m.id=i.used_by WHERE i.created_by=? ORDER BY i.created DESC LIMIT 50", [me.id]);
+      return { invites: list, left: me.is_admin ? 999 : me.invites_left };
+    }
+    if (path === "invite" && method === "POST") {
+      if (!me.is_admin && me.invites_left <= 0) throw E(400, "Δεν σου απομένουν άλλες προσκλήσεις.");
+      var nc = newCode();
+      await run(db, "INSERT INTO invites(code,created_by,created) VALUES(?,?,?)", [nc, me.id, now]);
+      if (!me.is_admin) await run(db, "UPDATE members SET invites_left=invites_left-1 WHERE id=?", [me.id]);
+      return { code: nc };
+    }
+    if (path === "feed") {
+      var sec2 = query.section === "market" ? "market" : "avli";
+      var where = "p.section=? AND m.banned=0 AND (p.hidden=0 OR p.member_id=?)", args = [sec2, me.id];
+      if (query.country) { where += " AND p.country=?"; args.push(cc(query.country)); }
+      if (query.area) { where += " AND p.area=?"; args.push(str(query.area, 60)); }
+      if (query.kind) { where += " AND p.kind=?"; args.push(str(query.kind, 30)); }
+      if (query.category) { where += " AND p.category=?"; args.push(str(query.category, 40)); }
+      if (query.member) { where += " AND p.member_id=?"; args.push(str(query.member, 20)); }
+      if (query.search) { where += " AND (p.title LIKE ? OR p.body LIKE ? OR p.area LIKE ?)"; var s = "%" + str(query.search, 60) + "%"; args.push(s, s, s); }
+      if (query.before) { where += " AND p.created < ?"; args.push(Number(query.before) || now); }
+      var posts = await all(db, "SELECT " + POST_COLS + " FROM posts p JOIN members m ON m.id=p.member_id WHERE " + where + " ORDER BY p.created DESC LIMIT 15", args);
+      return { posts: await decorate(db, posts, me), now: now };
+    }
+    if (path === "countries") {
+      return { countries: await all(db, "SELECT country, COUNT(*) n FROM posts WHERE hidden=0 GROUP BY country") };
+    }
+    if (path === "mine") {
+      var mp = await all(db, "SELECT " + POST_COLS + " FROM posts p JOIN members m ON m.id=p.member_id WHERE p.member_id=? ORDER BY p.created DESC LIMIT 60", [me.id]);
+      return { posts: await decorate(db, mp, me), now: now };
+    }
+    if (path === "post" && method === "POST") {
+      var today = await first(db, "SELECT COUNT(*) n FROM posts WHERE member_id=? AND created > ?", [me.id, now - DAY]);
+      if (today.n >= 20 && !me.is_admin) throw E(429, "Έκανες πολλές αναρτήσεις σήμερα. Συνέχισε αύριο.");
+      var section = body.section === "market" ? "market" : "avli";
+      var kind = str(body.kind, 30);
+      var okKinds = section === "market" ? KINDS_MARKET : KINDS_AVLI;
+      if (okKinds.indexOf(kind) < 0) kind = section === "market" ? "Πουλάω" : "Σκέψη";
+      var cat = section === "market" ? (CATS.indexOf(body.category) >= 0 ? body.category : "Άλλα") : "";
+      var title = str(body.title, 120), text = str(body.body, 6000);
+      var yt = ytId(body.youtube);
+      if (yt === null) throw E(400, "Ο σύνδεσμος βίντεο δεν είναι από το YouTube.");
+      var photos = Array.isArray(body.photos) ? body.photos.slice(0, 4) : [];
+      for (var i = 0; i < photos.length; i++) {
+        if (typeof photos[i] !== "string" || photos[i].indexOf("data:image/") !== 0) throw E(400, "Μη έγκυρη φωτογραφία.");
+        if (photos[i].length > 900000) throw E(400, "Μια φωτογραφία είναι πολύ μεγάλη.");
+      }
+      if (!title && !text && !photos.length && !yt) throw E(400, "Η ανάρτηση είναι άδεια.");
+      if (section === "market" && !title) throw E(400, "Γράψε τίτλο για την αγγελία.");
+      var pid = rnd(12);
+      var stmts = [q(db, "INSERT INTO posts(id,member_id,section,kind,category,title,body,price,area,youtube,created,expires,country) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        [pid, me.id, section, kind, cat, title, text, kind === "Χαρίζω" ? "Δωρεάν" : str(body.price, 40), str(body.area, 60), yt || "", now, now + LIFE, cc(body.country, me.country)])];
+      photos.forEach(function (d, i) { stmts.push(q(db, "INSERT INTO photos(id,post_id,pos,data) VALUES(?,?,?,?)", [rnd(14), pid, i, d])); });
+      await db.batch(stmts);
+      return { id: pid };
+    }
+    var pidq = str(body.id || query.id, 20);
+    async function getPost() { var p = await first(db, "SELECT * FROM posts WHERE id=?", [pidq]); if (!p) throw E(404, "Η ανάρτηση δεν υπάρχει πια."); return p; }
+
+    if (path === "renew" && method === "POST") {
+      var p1 = await getPost(); if (p1.member_id !== me.id) throw E(403, "Μόνο ο κάτοχος μπορεί να την ανανεώσει.");
+      await run(db, "UPDATE posts SET expires=? WHERE id=?", [now + LIFE, pidq]); return { ok: true };
+    }
+    if (path === "delete" && method === "POST") {
+      var p2 = await getPost(); if (p2.member_id !== me.id && !me.is_admin) throw E(403, "Δεν μπορείς να τη σβήσεις.");
+      await db.batch(["photos", "reactions", "comments", "reports"].map(function (t) { return q(db, "DELETE FROM " + t + " WHERE post_id=?", [pidq]); })
+        .concat([q(db, "DELETE FROM posts WHERE id=?", [pidq])]));
+      return { ok: true };
+    }
+    if (path === "react" && method === "POST") {
+      await getPost(); var t = body.type === "candle" ? "candle" : "heart";
+      var ex = await first(db, "SELECT 1 x FROM reactions WHERE post_id=? AND member_id=? AND type=?", [pidq, me.id, t]);
+      if (ex) await run(db, "DELETE FROM reactions WHERE post_id=? AND member_id=? AND type=?", [pidq, me.id, t]);
+      else await run(db, "INSERT INTO reactions(post_id,member_id,type) VALUES(?,?,?)", [pidq, me.id, t]);
+      return { on: !ex };
+    }
+    if (path === "comments") {
+      return { comments: await all(db, "SELECT c.id, c.body, c.created, c.member_id, m.name author FROM comments c JOIN members m ON m.id=c.member_id WHERE c.post_id=? ORDER BY c.created", [pidq]) };
+    }
+    if (path === "comment" && method === "POST") {
+      await getPost(); var cb = str(body.body, 1000); if (!cb) throw E(400, "Το σχόλιο είναι άδειο.");
+      await run(db, "INSERT INTO comments(id,post_id,member_id,body,created) VALUES(?,?,?,?,?)", [rnd(12), pidq, me.id, cb, now]); return { ok: true };
+    }
+    if (path === "uncomment" && method === "POST") {
+      var cm = await first(db, "SELECT * FROM comments WHERE id=?", [str(body.cid, 20)]);
+      if (cm && (cm.member_id === me.id || me.is_admin)) await run(db, "DELETE FROM comments WHERE id=?", [cm.id]);
+      return { ok: true };
+    }
+    if (path === "report" && method === "POST") {
+      await getPost();
+      await run(db, "INSERT OR IGNORE INTO reports(id,post_id,member_id,reason,created) VALUES(?,?,?,?,?)", [rnd(12), pidq, me.id, str(body.reason, 300), now]);
+      var rc2 = await first(db, "SELECT COUNT(*) n FROM reports WHERE post_id=?", [pidq]);
+      if (rc2.n >= 3) await run(db, "UPDATE posts SET hidden=1 WHERE id=?", [pidq]);
+      return { ok: true };
+    }
+    if (path === "member") {
+      var mm = await first(db, "SELECT id, name, area, about, created, country FROM members WHERE id=? AND banned=0", [str(query.id, 20)]);
+      if (!mm) throw E(404, "Το μέλος δεν βρέθηκε."); return mm;
+    }
+    if (path === "conversations") {
+      var cv = await all(db,
+        "SELECT CASE WHEN from_id=? THEN to_id ELSE from_id END other, MAX(created) last, SUM(CASE WHEN to_id=? AND seen=0 THEN 1 ELSE 0 END) unread FROM messages WHERE from_id=? OR to_id=? GROUP BY other ORDER BY last DESC",
+        [me.id, me.id, me.id, me.id]);
+      for (var k = 0; k < cv.length; k++) {
+        var om = await first(db, "SELECT name FROM members WHERE id=?", [cv[k].other]);
+        var lm2 = await first(db, "SELECT body FROM messages WHERE (from_id=? AND to_id=?) OR (from_id=? AND to_id=?) ORDER BY created DESC LIMIT 1", [me.id, cv[k].other, cv[k].other, me.id]);
+        cv[k].name = om ? om.name : "Πρώην μέλος"; cv[k].preview = lm2 ? lm2.body.slice(0, 80) : "";
+      }
+      return { conversations: cv };
+    }
+    if (path === "thread") {
+      var other = str(query.with, 20);
+      var msgs = await all(db, "SELECT x.id, x.from_id, x.body, x.created, x.post_id, p.title post_title FROM messages x LEFT JOIN posts p ON p.id=x.post_id WHERE (x.from_id=? AND x.to_id=?) OR (x.from_id=? AND x.to_id=?) ORDER BY x.created", [me.id, other, other, me.id]);
+      await run(db, "UPDATE messages SET seen=1 WHERE to_id=? AND from_id=?", [me.id, other]);
+      var on = await first(db, "SELECT name FROM members WHERE id=?", [other]);
+      return { messages: msgs, name: on ? on.name : "Πρώην μέλος" };
+    }
+    if (path === "message" && method === "POST") {
+      var to = await first(db, "SELECT id FROM members WHERE id=? AND banned=0", [str(body.to, 20)]);
+      if (!to || to.id === me.id) throw E(400, "Δεν βρέθηκε ο παραλήπτης.");
+      var mb = str(body.body, 2000); if (!mb) throw E(400, "Το μήνυμα είναι άδειο.");
+      var sentToday = await first(db, "SELECT COUNT(*) n FROM messages WHERE from_id=? AND created > ?", [me.id, now - DAY]);
+      if (sentToday.n >= 200) throw E(429, "Έστειλες πολλά μηνύματα σήμερα.");
+      await run(db, "INSERT INTO messages(id,from_id,to_id,post_id,body,created) VALUES(?,?,?,?,?,?)", [rnd(12), me.id, to.id, str(body.post_id, 20) || null, mb, now]);
+      return { ok: true };
+    }
+
+    // ----- διαχείριση -----
+    if (path.indexOf("admin") === 0) {
+      if (!me.is_admin) throw E(403, "Μόνο για τον διαχειριστή.");
+      if (path === "admin") {
+        return {
+          requests: await all(db, "SELECT id, name, contact, message, created FROM requests WHERE status='pending' ORDER BY created"),
+          reports: await all(db, "SELECT p.id, p.title, p.body, p.hidden, m.name author, COUNT(r.id) n, GROUP_CONCAT(r.reason, ' | ') reasons FROM reports r JOIN posts p ON p.id=r.post_id JOIN members m ON m.id=p.member_id GROUP BY p.id ORDER BY n DESC"),
+          members: await all(db, "SELECT a.id, a.name, a.area, a.country, a.is_admin, a.banned, a.invites_left, a.created, b.name invited_by_name, (SELECT COUNT(*) FROM posts WHERE member_id=a.id) posts FROM members a LEFT JOIN members b ON b.id=a.invited_by ORDER BY a.created")
+        };
+      }
+      var target = str(body.id, 20);
+      if (path === "admin/approve") {
+        var rq = await first(db, "SELECT * FROM requests WHERE id=? AND status='pending'", [target]); if (!rq) throw E(404, "Η αίτηση δεν βρέθηκε.");
+        var ac = newCode();
+        await run(db, "INSERT INTO invites(code,created_by,created) VALUES(?,?,?)", [ac, me.id, now]);
+        await run(db, "UPDATE requests SET status='approved', code=? WHERE id=?", [ac, target]);
+        return { code: ac };
+      }
+      if (path === "admin/reject") { await run(db, "UPDATE requests SET status='rejected' WHERE id=?", [target]); return { ok: true }; }
+      if (path === "admin/keep") { await db.batch([q(db, "DELETE FROM reports WHERE post_id=?", [target]), q(db, "UPDATE posts SET hidden=0 WHERE id=?", [target])]); return { ok: true }; }
+      if (target === me.id) throw E(400, "Δεν γίνεται για τον εαυτό σου.");
+      if (path === "admin/ban") { await run(db, "UPDATE members SET banned=? WHERE id=? AND is_admin=0", [body.on ? 1 : 0, target]); return { ok: true }; }
+      if (path === "admin/gift") { await run(db, "UPDATE members SET invites_left=invites_left+3 WHERE id=?", [target]); return { ok: true }; }
+      if (path === "admin/newkey") {
+        var nk = newKey(); await run(db, "UPDATE members SET keyhash=? WHERE id=? AND is_admin=0", [await hash(nk), target]); return { key: nk };
+      }
+    }
+    throw E(404, "Άγνωστη ενέργεια.");
+  }
+  return { handle: handle, ytId: ytId };
+})();
+
+</script>
+<script>
+"use strict";
+var VERSION = "27-11-2026 15:18";
+var DAY = 86400000;
+var S = { mode: "live", me: null, view: "avli", ping: null, filters: { avli: "", market: "", cat: "", search: "", area: "" }, draft: null };
+var $app = document.getElementById("app"), $nav = document.getElementById("nav"), $layer = document.getElementById("layer");
+
+// ---------- περιοχές ανά χώρα ----------
+var REGIONS = {
+  CY: ["Λευκωσία", "Λεμεσός", "Λάρνακα", "Πάφος", "Αμμόχωστος", "Κερύνεια"],
+  GR: ["Αθήνα", "Πειραιάς", "Θεσσαλονίκη", "Πάτρα", "Ηράκλειο", "Λάρισα", "Βόλος", "Ιωάννινα", "Χανιά", "Ρέθυμνο", "Ρόδος", "Καλαμάτα", "Κέρκυρα", "Καβάλα", "Αλεξανδρούπολη", "Κομοτηνή", "Σέρρες", "Δράμα", "Κοζάνη", "Τρίπολη", "Χαλκίδα", "Λαμία", "Άρτα", "Πρέβεζα", "Μυτιλήνη", "Χίος", "Σάμος", "Κως", "Σύρος"],
+  GB: ["Λονδίνο", "Μπέρμιγχαμ", "Μάντσεστερ", "Λίβερπουλ", "Λιντς", "Γλασκώβη", "Εδιμβούργο", "Μπρίστολ", "Κάρντιφ", "Μπέλφαστ"],
+  DE: ["Βερολίνο", "Μόναχο", "Αμβούργο", "Φρανκφούρτη", "Κολωνία", "Στουτγάρδη", "Ντίσελντορφ", "Νυρεμβέργη", "Λειψία", "Βρέμη", "Ανόβερο"],
+  US: ["Νέα Υόρκη", "Σικάγο", "Λος Άντζελες", "Βοστώνη", "Σαν Φρανσίσκο", "Μαϊάμι", "Χιούστον", "Ουάσιγκτον", "Φιλαδέλφεια", "Ντιτρόιτ", "Τάμπα"],
+  AU: ["Μελβούρνη", "Σίδνεϊ", "Αδελαΐδα", "Μπρίσμπεϊν", "Πέρθ", "Καμπέρα"],
+  CA: ["Τορόντο", "Μόντρεαλ", "Βανκούβερ", "Οτάβα", "Κάλγκαρι"],
+  FR: ["Παρίσι", "Μασσαλία", "Λυών", "Τουλούζη", "Νίκαια", "Μπορντό", "Λιλ"],
+  IT: ["Ρώμη", "Μιλάνο", "Νάπολη", "Τορίνο", "Φλωρεντία", "Μπολόνια", "Βενετία", "Παλέρμο"],
+  ES: ["Μαδρίτη", "Βαρκελώνη", "Βαλένθια", "Σεβίλλη", "Μάλαγα", "Μπιλμπάο"],
+  NL: ["Άμστερνταμ", "Ρότερνταμ", "Χάγη", "Ουτρέχτη", "Αϊντχόβεν"],
+  BE: ["Βρυξέλλες", "Αμβέρσα", "Γάνδη", "Λιέγη"],
+  CH: ["Ζυρίχη", "Γενεύη", "Βασιλεία", "Βέρνη", "Λωζάνη"],
+  AT: ["Βιέννη", "Γκρατς", "Λιντς", "Σάλτσμπουργκ", "Ίνσμπρουκ"],
+  SE: ["Στοκχόλμη", "Γκέτεμποργκ", "Μάλμε", "Ουψάλα"],
+  ZA: ["Γιοχάνεσμπουργκ", "Κέιπ Τάουν", "Ντέρμπαν", "Πρετόρια"],
+  RU: ["Μόσχα", "Αγία Πετρούπολη"],
+  TR: ["Κωνσταντινούπολη", "Άγκυρα", "Σμύρνη"],
+  EG: ["Κάιρο", "Αλεξάνδρεια"]
+};
+var _areaCache = {};
+async function areasFor(c) {
+  var base = (REGIONS[c] || []).slice();
+  try { if (!_areaCache[c]) _areaCache[c] = (await api("areas", { query: { country: c } })).areas; } catch (e) { _areaCache[c] = []; }
+  _areaCache[c].forEach(function (a) { if (base.indexOf(a) < 0) base.push(a); });
+  return base;
+}
+
+// ---------- γλώσσες και μετάφραση ----------
+var LANGS = ["el", "en", "de", "fr", "it", "es", "pt", "nl", "ru", "uk", "bg", "ro", "sr", "sq", "mk", "tr", "ar", "he", "fa", "hi", "ur", "bn", "zh-CN", "zh-TW", "ja", "ko", "vi", "th", "id", "ms", "tl", "pl", "cs", "sk", "hu", "sv", "no", "da", "fi", "et", "lv", "lt", "hr", "sl", "ka", "hy", "sw", "am"];
+function guessLang() {
+  var l = (navigator.language || "el").toLowerCase();
+  if (l.indexOf("zh") === 0) return l.indexOf("tw") > 0 || l.indexOf("hk") > 0 ? "zh-TW" : "zh-CN";
+  l = l.slice(0, 2); if (l === "nb" || l === "nn") l = "no";
+  return LANGS.indexOf(l) >= 0 ? l : "en";
+}
+var LANG = load("avli_lang") || guessLang();
+function langName(c) { try { var n = new Intl.DisplayNames([c], { type: "language" }).of(c); return n.charAt(0).toUpperCase() + n.slice(1); } catch (e) { return c; } }
+function pickLang() {
+  modal('<h2 style="margin-top:0">🌐 Γλώσσα</h2><input type="text" placeholder="🔎" oninput="drawLangs(this.value)" data-u><div id="llist" style="margin-top:10px"></div><button class="btn big ghost" onclick="closeModal()">Κλείσιμο</button>');
+  drawLangs("");
+}
+function drawLangs(f) {
+  f = plain(f);
+  document.getElementById("llist").innerHTML = LANGS.filter(function (c) { return !f || plain(langName(c)).indexOf(f) >= 0 || c.indexOf(f) === 0; }).map(function (c) {
+    return '<button data-u class="chip' + (c === LANG ? " on" : "") + '" style="display:block;width:100%;text-align:left;margin:6px 0;border-radius:14px;padding:12px 14px" onclick="setLang(\'' + c + '\')">' + esc(langName(c)) + '</button>';
+  }).join("");
+}
+function setLang(c) { store("avli_lang", c); location.reload(); }
+var TR = { cache: {}, pending: {}, busy: false, t: null, warned: false };
+if (LANG !== "el") { TR.cache = load("avli_tr_" + LANG) || {}; }
+function T(s) { if (LANG === "el") return s; if (TR.cache[s]) return TR.cache[s]; TR.pending[s] = 1; scheduleTr(); return s; }
+function hasGreek(s) { return /[Ͱ-Ͽἀ-῿]/.test(s); }
+function skipNode(el) { return !el || el.closest("[data-u],textarea,script,style,input"); }
+function trPass() {
+  if (LANG === "el") return;
+  var w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT), n;
+  while ((n = w.nextNode())) {
+    if (skipNode(n.parentElement)) continue;
+    if (n.__o === undefined) { if (!hasGreek(n.nodeValue)) continue; n.__o = n.nodeValue; }
+    var k = n.__o.trim(); if (!k) continue;
+    if (TR.cache[k]) { var v = n.__o.replace(k, TR.cache[k]); if (n.nodeValue !== v) n.nodeValue = v; } else TR.pending[k] = 1;
+  }
+  document.querySelectorAll("[placeholder],[title]").forEach(function (el) {
+    if (el.closest("[data-u]")) return;
+    ["placeholder", "title"].forEach(function (a) {
+      var o = el.getAttribute("data-o-" + a) || el.getAttribute(a); if (!o || !hasGreek(o)) return;
+      el.setAttribute("data-o-" + a, o);
+      if (TR.cache[o]) el.setAttribute(a, TR.cache[o]); else TR.pending[o] = 1;
+    });
+  });
+  if (Object.keys(TR.pending).length) fetchTr();
+}
+function scheduleTr() { if (LANG === "el") return; clearTimeout(TR.t); TR.t = setTimeout(trPass, 40); }
+async function fetchTr() {
+  if (TR.busy) return; TR.busy = true;
+  try {
+    while (Object.keys(TR.pending).length) {
+      var batch = [], chars = 0;
+      Object.keys(TR.pending).forEach(function (k) { if (batch.length < 100 && chars + k.length < 12000) { batch.push(k); chars += k.length; } });
+      batch.forEach(function (k) { delete TR.pending[k]; });
+      var r = await api("translate", { body: { texts: batch, target: LANG } });
+      if (r.off || r.limit) {
+        if (!TR.warned) { TR.warned = true; toast(S.mode === "demo" ? "🌐 Η μετάφραση θα λειτουργεί όταν η Αυλή ανέβει στο διαδίκτυο." : "🌐 Η μετάφραση δεν είναι διαθέσιμη αυτή τη στιγμή."); }
+        batch.forEach(function (k, i) { if (r.translations[i] !== k) TR.cache[k] = r.translations[i]; });
+        break;
+      }
+      batch.forEach(function (k, i) { TR.cache[k] = r.translations[i]; });
+    }
+    var j = JSON.stringify(TR.cache); if (j.length > 1500000) { TR.cache = {}; j = "{}"; }
+    try { localStorage.setItem("avli_tr_" + LANG, j); } catch (e) { }
+  } catch (e) { }
+  TR.busy = false; trPass();
+}
+async function translatePost(id, btn) {
+  var card = document.getElementById("p_" + id); if (!card) return;
+  var els = Array.prototype.slice.call(card.querySelectorAll(".title[data-u], .body[data-u]"));
+  if (btn.dataset.on) { els.forEach(function (e) { e.innerHTML = e.__orig; }); btn.dataset.on = ""; btn.textContent = T("🌐 Μετάφραση"); return; }
+  btn.textContent = "…";
+  try {
+    var r = await api("translate", { body: { texts: els.map(function (e) { return e.textContent; }), target: LANG, ugc: true } });
+    if (r.off) { btn.textContent = T("🌐 Μετάφραση"); return toast(S.mode === "demo" ? "🌐 Η μετάφραση θα λειτουργεί όταν η Αυλή ανέβει στο διαδίκτυο." : "🌐 Η μετάφραση δεν είναι διαθέσιμη αυτή τη στιγμή."); }
+    els.forEach(function (e, i) { e.__orig = e.innerHTML; e.innerHTML = linkify(r.translations[i]); });
+    btn.dataset.on = "1"; btn.textContent = T("↩️ Αρχικό κείμενο");
+  } catch (e) { btn.textContent = T("🌐 Μετάφραση"); toast(e.message); }
+}
+
+// ---------- χώρες ----------
+var CODES = "AD AE AF AG AI AL AM AO AR AS AT AU AW AX AZ BA BB BD BE BF BG BH BI BJ BL BM BN BO BQ BR BS BT BW BY BZ CA CC CD CF CG CH CI CK CL CM CN CO CR CU CV CW CX CY CZ DE DJ DK DM DO DZ EC EE EG EH ER ES ET FI FJ FK FM FO FR GA GB GD GE GF GG GH GI GL GM GN GP GQ GR GT GU GW GY HK HN HR HT HU ID IE IL IM IN IQ IR IS IT JE JM JO JP KE KG KH KI KM KN KP KR KW KY KZ LA LB LC LI LK LR LS LT LU LV LY MA MC MD ME MF MG MH MK ML MM MN MO MP MQ MR MS MT MU MV MW MX MY MZ NA NC NE NF NG NI NL NO NP NR NU NZ OM PA PE PF PG PH PK PL PM PN PR PS PT PW PY QA RE RO RS RU RW SA SB SC SD SE SG SH SI SK SL SM SN SO SR SS ST SV SX SY SZ TC TD TG TH TJ TK TL TM TN TO TR TT TV TW TZ UA UG US UY UZ VA VC VE VG VI VN VU WF WS XK YE YT ZA ZM ZW".split(" ");
+var _dn = null; try { _dn = new Intl.DisplayNames([LANG], { type: "region" }); } catch (e) { }
+function cname(c) { c = c || "CY"; if (c === "XK") return "Κοσσυφοπέδιο"; try { return (_dn && _dn.of(c)) || c; } catch (e) { return c; } }
+function flag(c) { c = c || "CY"; return String.fromCodePoint(127397 + c.charCodeAt(0), 127397 + c.charCodeAt(1)); }
+function cfull(c) { return flag(c) + " " + cname(c); }
+function guessCountry() {
+  try { var tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ""; if (tz === "Asia/Nicosia" || tz === "Asia/Famagusta") return "CY"; if (tz === "Europe/Athens") return "GR"; } catch (e) { }
+  var m = (navigator.language || "").match(/-([A-Za-z]{2})$/); var c = m ? m[1].toUpperCase() : "CY"; return CODES.indexOf(c) >= 0 ? c : "CY";
+}
+function plain(t) { return String(t || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, ""); }
+function sortedCodes() { return CODES.slice().sort(function (a, b) { return cname(a).localeCompare(cname(b), "el"); }); }
+function countrySelect(id, sel) {
+  var top = ["CY", "GR"], rest = sortedCodes().filter(function (c) { return top.indexOf(c) < 0; });
+  return '<select data-u id="' + id + '">' + top.concat(rest).map(function (c) { return '<option value="' + c + '"' + (c === sel ? " selected" : "") + '>' + esc(cfull(c)) + '</option>'; }).join("") + '</select>';
+}
+function curCountry() { return S.country || (S.me && S.me.country) || "CY"; }
+async function pickCountry() {
+  var counts = {}; try { (await api("countries")).countries.forEach(function (x) { counts[x.country] = x.n; }); } catch (e) { }
+  var home = (S.me && S.me.country) || "CY";
+  S._clist = [home].concat(["CY", "GR"].filter(function (c) { return c !== home; })).concat(sortedCodes().filter(function (c) { return c !== home && c !== "CY" && c !== "GR"; }));
+  S._ccounts = counts;
+  modal('<h2 style="margin-top:0">🌍 Σε ποια χώρα;</h2><p class="hint">Κάθε χώρα έχει τη δική της αυλή και το δικό της παζάρι. Τα μέλη είναι κοινά.</p><input type="text" placeholder="🔎 Γράψε χώρα, π.χ. Γερμανία" oninput="drawCountries(this.value)"><div id="clist" style="margin-top:10px"></div><button class="btn big ghost" onclick="closeModal()">Κλείσιμο</button>');
+  drawCountries("");
+}
+function drawCountries(f) {
+  f = plain(f);
+  var html = S._clist.filter(function (c) { return !f || plain(cname(c)).indexOf(f) >= 0; }).map(function (c) {
+    var n = S._ccounts[c] || 0;
+    return '<button class="chip' + (c === curCountry() ? " on" : "") + '" style="display:flex;width:100%;justify-content:space-between;margin:6px 0;border-radius:14px;padding:12px 14px" onclick="setCountry(\'' + c + '\')"><span data-u>' + esc(cfull(c)) + '</span><span class="hint">' + (n ? n + " αναρτήσεις" : "") + '</span></button>';
+  }).join("");
+  document.getElementById("clist").innerHTML = html || '<div class="hint">Δεν βρέθηκε.</div>';
+}
+function setCountry(c) { S.country = c; store("avli_country", c); closeModal(); if (S.view === "new" && S.draft) renderNew(); else render(); }
+
+// ---------- βοηθητικά ----------
+function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+function linkify(s) { return esc(s).replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener nofollow">$1</a>'); }
+function ago(t) {
+  var d = (Date.now() - t) / 1000;
+  if (d < 60) return "μόλις τώρα";
+  if (d < 3600) { var m = Math.floor(d / 60); return "πριν από " + m + (m === 1 ? " λεπτό" : " λεπτά"); }
+  if (d < 86400) { var h = Math.floor(d / 3600); return "πριν από " + h + (h === 1 ? " ώρα" : " ώρες"); }
+  var n = Math.floor(d / 86400); if (n === 1) return "χθες";
+  return "πριν από " + n + " ημέρες";
+}
+function daysLeft(exp) { return Math.max(0, Math.ceil((exp - Date.now()) / DAY)); }
+function colorOf(s) { var c = ["#E2725B", "#6E9B4A", "#4A9BCB", "#9B5D8E", "#E0A030", "#C0763F", "#3FA79B"], h = 0; s = String(s || ""); for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0; return c[h % c.length]; }
+function avatar(name, id) { return '<div class="avatar" style="background:' + colorOf(id || name) + '" onclick="openMember(\'' + esc(id) + '\')">' + esc((name || "?").trim().charAt(0)) + '</div>'; }
+function toast(t) { var d = document.createElement("div"); d.className = "toast"; d.textContent = t; document.body.appendChild(d); setTimeout(function () { d.remove(); }, 3200); }
+function getKey() { try { return localStorage.getItem("avli_key") || ""; } catch (e) { return ""; } }
+function setKey(k) { try { if (k) localStorage.setItem("avli_key", k); else localStorage.removeItem("avli_key"); } catch (e) { } }
+function store(k, v) { try { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k, JSON.stringify(v)); } catch (e) { } }
+function load(k) { try { return JSON.parse(localStorage.getItem(k) || "null"); } catch (e) { return null; } }
+function modal(html) { $layer.innerHTML = '<div class="modal" onclick="if(event.target===this)closeModal()"><div class="card">' + html + '</div></div>'; }
+function closeModal() { $layer.innerHTML = ""; }
+function copyText(t) {
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(function () { toast("Αντιγράφηκε ✔"); }, function () { prompt("Αντίγραψε από εδώ:", t); });
+  else prompt("Αντίγραψε από εδώ:", t);
+}
+function shareText(title, text) {
+  if (navigator.share) navigator.share({ title: title, text: text }).catch(function () { });
+  else copyText(text);
+}
+function writeMe() {
+  var a = ["cyp", "11111"].join("") + "@" + ["gmail", "com"].join(".");
+  location.href = "mai" + "lto:" + a + "?subject=" + encodeURIComponent("Η Αυλή μας") + "&body=" + encodeURIComponent("Γεια σας κ. Χρίστο,\n\n");
+}
+
+// ---------- επικοινωνία με τον διακομιστή ----------
+var demoDB = null, demoSave = null;
+async function api(path, opt) {
+  opt = opt || {};
+  var method = opt.body ? "POST" : "GET", query = opt.query || {};
+  if (S.mode === "demo") {
+    try {
+      var r = await AvliCore.handle(method, path, JSON.parse(JSON.stringify(opt.body || {})), getKey(), { DB: demoDB, ADMIN_CODE: (path === "setup" && String((opt.body || {}).admin_code || "").trim().length >= 4) ? String(opt.body.admin_code).trim() : "\u0000" }, query);
+      if (method === "POST") demoSave();
+      return r;
+    } catch (e) { throw new Error(e.message); }
+  }
+  var qs = Object.keys(query).filter(function (k) { return query[k] !== "" && query[k] != null; }).map(function (k) { return encodeURIComponent(k) + "=" + encodeURIComponent(query[k]); }).join("&");
+  var res = await fetch("api/" + path + (qs ? "?" + qs : ""), {
+    method: method, headers: { "Content-Type": "application/json", "X-Key": getKey() },
+    body: opt.body ? JSON.stringify(opt.body) : undefined
+  });
+  var j; try { j = await res.json(); } catch (e) { throw new Error("Πρόβλημα σύνδεσης. Δοκίμασε ξανά."); }
+  if (!res.ok) { var er = new Error(j.error || "Σφάλμα"); er.status = res.status; throw er; }
+  return j;
+}
+function photoSrc(id) {
+  if (S.mode === "demo") { var st = demoDB.raw.prepare("SELECT data FROM photos WHERE id=?"); st.bind([id]); var d = st.step() ? st.getAsObject().data : ""; st.free(); return d; }
+  return "api/photo?id=" + encodeURIComponent(id);
+}
+
+// ---- δοκιμαστική λειτουργία (στη συσκευή μόνο) με SQLite στον περιηγητή ----
+function loadScript(src) { return new Promise(function (ok, no) { var s = document.createElement("script"); s.src = src; s.onload = ok; s.onerror = no; document.head.appendChild(s); }); }
+function idb() { return new Promise(function (ok, no) { var r = indexedDB.open("avli-demo", 1); r.onupgradeneeded = function () { r.result.createObjectStore("db"); }; r.onsuccess = function () { ok(r.result); }; r.onerror = no; }); }
+async function idbGet() { var d = await idb(); return new Promise(function (ok) { var r = d.transaction("db").objectStore("db").get("main"); r.onsuccess = function () { ok(r.result || null); }; r.onerror = function () { ok(null); }; }); }
+async function idbPut(v) { var d = await idb(); d.transaction("db", "readwrite").objectStore("db").put(v, "main"); }
+async function startDemo() {
+  var base = window.SQLJS_BASE || "https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/";
+  await loadScript(base + "sql-wasm.js");
+  var SQL = await initSqlJs({ locateFile: function (f) { return base + f; } });
+  var saved = null; try { saved = await idbGet(); } catch (e) { }
+  var raw = saved ? new SQL.Database(saved) : new SQL.Database();
+  function stmt(sql, args) {
+    return {
+      bind: function () { return stmt(sql, Array.prototype.slice.call(arguments)); },
+      all: async function () { var st = raw.prepare(sql); if (args) st.bind(args); var rows = []; while (st.step()) rows.push(st.getAsObject()); st.free(); return { results: rows }; },
+      first: async function () { var r = await this.all(); return r.results[0] || null; },
+      run: async function () { raw.run(sql, args || []); return { success: true }; }
+    };
+  }
+  demoDB = {
+    raw: raw, prepare: function (sql) { return stmt(sql, null); },
+    batch: async function (list) { raw.run("BEGIN"); try { for (var i = 0; i < list.length; i++) await list[i].run(); raw.run("COMMIT"); } catch (e) { raw.run("ROLLBACK"); throw e; } }
+  };
+  var tm = null;
+  demoSave = function () { clearTimeout(tm); tm = setTimeout(function () { idbPut(raw.export()).catch(function () { }); }, 300); };
+}
+
+// ---------- φωτογραφίες: σμίκρυνση πριν το ανέβασμα ----------
+function shrink(file) {
+  return new Promise(function (ok, no) {
+    var url = URL.createObjectURL(file), img = new Image();
+    img.onload = function () {
+      var max = 1280, w = img.naturalWidth, h = img.naturalHeight, r = Math.min(1, max / Math.max(w, h));
+      var c = document.createElement("canvas"); c.width = Math.round(w * r); c.height = Math.round(h * r);
+      c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(url);
+      var q = 0.78, d = c.toDataURL("image/jpeg", q);
+      while (d.length > 600000 && q > 0.4) { q -= 0.1; d = c.toDataURL("image/jpeg", q); }
+      ok(d);
+    };
+    img.onerror = function () { no(new Error("Δεν μπόρεσα να διαβάσω τη φωτογραφία.")); };
+    img.src = url;
+  });
+}
+
+// ---------- εκκίνηση ----------
+async function boot() {
+  document.documentElement.lang = LANG;
+  if (["ar", "he", "fa", "ur"].indexOf(LANG) >= 0) document.documentElement.dir = "rtl";
+  if (LANG !== "el") { new MutationObserver(scheduleTr).observe(document.body, { childList: true, subtree: true }); }
+  var live = location.protocol === "http:" || location.protocol === "https:";
+  if (live) { try { S.ping = await api("ping"); } catch (e) { live = false; } }
+  if (!live) {
+    S.mode = "demo";
+    try { await startDemo(); S.ping = await api("ping"); }
+    catch (e) { $app.innerHTML = '<div class="card">Για τη δοκιμή χρειάζεται σύνδεση στο διαδίκτυο την πρώτη φορά. Έλεγξε τη σύνδεση και άνοιξε ξανά το αρχείο.</div>'; return; }
+  }
+  var m = location.hash.match(/invite=([A-Z0-9-]+)/i);
+  if (m) { S.inviteCode = m[1].toUpperCase(); try { var ii = await api("invite-info", { query: { code: S.inviteCode } }); if (ii.ok) S.inviteFrom = ii.from; else toast("Αυτή η πρόσκληση έχει ήδη χρησιμοποιηθεί ή δεν ισχύει."); } catch (e) { } }
+  if (getKey()) { try { await refreshMe(); } catch (e) { if (e.status === 401 || e.status === 403 || S.mode === "demo") setKey(""); } }
+  if (S.me && S.inviteCode) { toast("Είσαι ήδη μέλος της Αυλής 🙂"); history.replaceState(null, "", location.pathname); }
+  S.country = load("avli_country") || (S.me && S.me.country) || null;
+  render(); scheduleTr();
+  setInterval(function () { if (S.me) refreshMe().then(drawNav).catch(function () { }); }, 60000);
+}
+async function refreshMe() { S.me = await api("me"); return S.me; }
+function demoBanner() { return S.mode === "demo" && !S.me ? '<div class="demo">🧪 <b>Δοκιμαστική λειτουργία.</b> Όλα μένουν μόνο σε αυτόν τον υπολογιστή. Για την ίδρυση, γράψε όποιον κωδικό θέλεις (τουλάχιστον 4 γράμματα ή αριθμούς).</div>' : ""; }
+
+function render() {
+  if (S.info) { $nav.style.display = S.me ? "flex" : "none"; if (S.me) drawNav(); window.scrollTo(0, 0); return renderInfo(); }
+  if (!S.me) { $nav.style.display = "none"; return renderWelcome(); }
+  $nav.style.display = "flex"; drawNav();
+  var v = S.view;
+  setHeader(v);
+  window.scrollTo(0, 0);
+  if (v === "avli" || v === "market") return renderFeed(v);
+  if (v === "new") return renderNew();
+  if (v === "msgs") return renderConversations();
+  if (v === "thread") return renderThread(S.threadWith, S.threadPost);
+  if (v === "me") return renderMe();
+  if (v === "member") return renderMemberPage(S.memberId);
+  if (v === "admin") return renderAdmin();
+}
+function go(v) { S.info = false; S.view = v; render(); }
+function goHome() { closeModal(); S.info = false; S.draft = null; S.filters = { avli: "", market: "", cat: "", search: "", area: "" }; S.view = "avli"; render(); }
+function setHeader(v) {
+  var m = v === "market";
+  document.getElementById("htitle").textContent = m ? "Το παζάρι της παρέας" : "Η Αυλή μας";
+  document.getElementById("hsub").innerHTML = esc(m ? "στην αυλή μας" : "ένας ζεστός κύκλος φίλων") + (S.me ? ' · <span data-u>' + esc(cfull(curCountry())) + '</span>' : "");
+}
+function openInfo() { closeModal(); S.info = true; render(); }
+function closeInfo() { S.info = false; render(); }
+function drawNav() {
+  var me = S.me || {}, items = [["avli", "🏡", "Αυλή"], ["market", "🧺", "Παζάρι παρέας"], ["new", "+", "Νέο"], ["msgs", "✉️", "Μηνύματα"], ["me", "🙂", "Εγώ"]];
+  if (me.is_admin) items.push(["admin", "🛡️", "Φύλαξη"]);
+  $nav.innerHTML = items.map(function (it) {
+    var dot = "";
+    if (it[0] === "msgs" && me.unread) dot = '<span class="dot">' + me.unread + '</span>';
+    if (it[0] === "admin" && me.admin_todo) dot = '<span class="dot">' + me.admin_todo + '</span>';
+    if (it[0] === "me" && me.expiring && me.expiring.length) dot = '<span class="dot">!</span>';
+    var on = S.view === it[0] || (it[0] === "msgs" && S.view === "thread");
+    return '<button class="' + (on ? "on " : "") + (it[0] === "new" ? "plus" : "") + '" onclick="go(\'' + it[0] + '\')"><span class="ic">' + it[1] + '</span>' + it[2] + dot + '</button>';
+  }).join("");
+}
+
+// ---------- οδηγός ----------
+function renderInfo() {
+  var sec = function (ic, t, body, open) { return '<details class="card"' + (open ? " open" : "") + '><summary style="font-weight:800;font-size:1.1em;cursor:pointer">' + ic + " " + t + '</summary><div style="margin-top:10px">' + body + '</div></details>'; };
+  var h = '<div class="row" style="margin-bottom:12px"><button class="btn small ghost" onclick="closeInfo()">← Πίσω</button><h2 style="margin:0;color:var(--terra)">ℹ️ Οδηγός της Αυλής</h2></div>';
+  h += sec("🏡", "Τι είναι η Αυλή μας", '<p>Ένας ζεστός, <b>κλειστός κύκλος</b> φίλων, σαν την αυλή του χωριού όπου κάθονται οι γνωστοί και μοιράζονται. Εδώ δεν υπάρχουν διαφημίσεις ούτε ξένοι. Μπαίνει κανείς μόνο με πρόσκληση από κάποιο μέλος.</p><p>Μοιραζόμαστε σκέψεις, ποιήματα, ιστορίες, συνταγές, φωτογραφίες και βίντεο. Στο παζάρι της παρέας ανταλλάζουμε πράγματα.</p>', true);
+  h += sec("🎟️", "Πώς μπαίνω", '<ul style="padding-left:22px"><li><b>Με πρόσκληση:</b> γράφεις τον κωδικό που σου έστειλε ένα μέλος και το όνομά σου.</li><li><b>Χωρίς πρόσκληση:</b> πατάς «Ζήτα πρόσκληση». Μόλις εγκριθεί, μπαίνεις από την ίδια συσκευή.</li><li><b>Από νέο κινητό:</b> γράφεις το προσωπικό σου κλειδί.</li></ul>');
+  h += sec("➕", "Πώς κάνω ανάρτηση", '<ol style="padding-left:22px"><li>Πατάς το μεγάλο <b>+</b> κάτω στη μέση.</li><li>Διαλέγεις «Ανάρτηση στην Αυλή» ή «Αγγελία στο παζάρι της παρέας».</li><li>Διαλέγεις είδος (π.χ. Ποίημα), γράφεις και προσθέτεις έως 4 φωτογραφίες.</li><li>Πατάς «Δημοσίευση».</li></ol><p class="hint">🎬 Για βίντεο: το ανεβάζεις πρώτα στο YouTube και επικολλάς εδώ τον σύνδεσμο.</p>');
+  h += sec("❤️", "Καρδιά, κερί και σχόλια", '<p><b>❤️</b> σημαίνει «μου αρέσει». <b>🕯️</b> σημαίνει «σε σκέφτομαι», για στιγμές συγκίνησης, προσευχής ή συμπαράστασης. Με το <b>💬</b> γράφεις ένα καλό λόγο.</p>');
+  h += sec("🌐", "Η Αυλή στη γλώσσα σου", '<p>Η Αυλή ανοίγει μόνη της στη γλώσσα του κινητού σου. Για να αλλάξεις γλώσσα, πάτησε το <b>🌐</b> πάνω δεξιά.</p><p>Κάτω από κάθε ανάρτηση υπάρχει το <b>«🌐 Μετάφραση»</b>: έτσι διαβάζεις στη γλώσσα σου ό,τι έγραψε ένας φίλος σε άλλη γλώσσα.</p>');
+  h += sec("🌍", "Αυλές σε όλες τις χώρες", '<p>Κάθε χώρα έχει τη <b>δική της αυλή</b> και το δικό της παζάρι, για να βλέπεις αναρτήσεις και αγγελίες από τον τόπο σου. Τα μέλη είναι κοινά σε όλες.</p><p>Στην κορυφή της Αυλής πατάς <b>«🌍 αλλαγή»</b> και διαλέγεις χώρα. Ό,τι δημοσιεύσεις μπαίνει στην αυλή της χώρας που βλέπεις εκείνη τη στιγμή. Τη χώρα όπου ζεις την ορίζεις στο «🙂 Εγώ».</p>');
+  h += sec("🧺", "Το παζάρι της παρέας στην αυλή μας", '<p>Τέσσερις επιλογές: <b>🏷️ Πουλάω, 🔍 Ψάχνω, 🎁 Χαρίζω, 🙋 Χρειάζομαι</b>. Υπάρχουν κατηγορίες (σπίτια, διαμερίσματα, οικόπεδα, χωράφια, έπιπλα, είδη σπιτιού κ.ά.) και αναζήτηση.</p><p>Με το «✉️ Μήνυμα» μιλάς ιδιωτικά με τον κάτοχο της αγγελίας. <b>Τα χρήματα δεν περνούν από την Αυλή.</b> Συμφωνείτε απευθείας μεταξύ σας.</p>');
+  h += sec("🛡️", "Ασφάλεια στις ανταλλαγές", '<ul style="padding-left:22px"><li>Ποτέ προκαταβολή σε άγνωστο.</li><li>Συνάντηση σε δημόσιο χώρο, καλύτερα με συνοδεία.</li><li>Για ακίνητα: πρώτα έλεγχος τίτλου στο Κτηματολόγιο και δικηγόρος, μετά οποιαδήποτε πληρωμή.</li><li>Ποτέ κωδικούς τράπεζας ή στοιχεία κάρτας σε μήνυμα.</li><li>Αν κάτι φαίνεται πολύ καλό για να είναι αληθινό, μάλλον δεν είναι.</li></ul>');
+  h += sec("⏳", "Γιατί σβήνονται όλα σε 30 ημέρες", '<p>Για να μένει η Αυλή ελαφριά, καθαρή και επίκαιρη. Τρεις ημέρες πριν σβηστεί κάτι δικό σου, βλέπεις ειδοποίηση και μπορείς να πατήσεις <b>«Ανανέωση»</b> για άλλες 30 ημέρες. Τα μηνύματα σβήνονται κι αυτά μετά από 30 ημέρες.</p><p class="hint">Κράτα πάντα τα πρωτότυπα των φωτογραφιών σου στο κινητό σου.</p>');
+  h += sec("🎟️", "Προσκλήσεις", '<p>Κάθε μέλος έχει <b>3 προσκλήσεις</b>. Στο «🙂 Εγώ» πατάς «Νέα πρόσκληση» και τη στέλνεις με Viber, WhatsApp ή μήνυμα. Κάλεσε μόνο ανθρώπους που εμπιστεύεσαι· η Αυλή θυμάται ποιος κάλεσε ποιον.</p>');
+  h += sec("🔑", "Το προσωπικό μου κλειδί", '<p>Όταν μπαίνεις πρώτη φορά, παίρνεις ένα κλειδί, π.χ. <b>AVLI-XXXX-XXXX-XXXX</b>. Δεν χρειάζεσαι κωδικό ή email. Το κλειδί είναι ο «κωδικός» σου.</p><ul style="padding-left:22px"><li>Φύλαξέ το σε χαρτί ή φωτογράφισέ το.</li><li>Μην το δώσεις σε κανέναν.</li><li>Αν το χάσεις, ο διαχειριστής μπορεί να σου δώσει νέο.</li></ul><p>Το βρίσκεις στο «🙂 Εγώ» → «🔑 Το κλειδί μου». Εκεί μπορείς να το <b>αλλάξεις σε κάτι που θυμάσαι</b> (τουλάχιστον 8 γράμματα ή αριθμούς).</p>');
+  h += sec("⚠️", "Κάτι ακατάλληλο;", '<p>Πατάς τις <b>⋯</b> στην ανάρτηση και μετά «Ανάφερε στον διαχειριστή». Αν τρία μέλη αναφέρουν την ίδια ανάρτηση, κρύβεται αμέσως μέχρι να την ελέγξει ο διαχειριστής.</p>');
+  h += sec("🔒", "Ιδιωτικότητα", '<p>Ό,τι ανεβάζεις το βλέπουν <b>μόνο τα μέλη</b> της Αυλής. Μπορείς να σβήσεις οποιαδήποτε δική σου ανάρτηση ή σχόλιο όποτε θέλεις. Η Αυλή δεν ζητά τηλέφωνο, διεύθυνση ή email και δεν πουλά ούτε δίνει πουθενά τα στοιχεία σου.</p>');
+  h += sec("📱", "Να την έχω σαν εφαρμογή στο κινητό", '<p><b>iPhone:</b> άνοιξε την Αυλή στο Safari → πάτησε το κουμπί κοινοποίησης (τετράγωνο με βέλος) → «Προσθήκη στην οθόνη Αφετηρίας».</p><p><b>Android:</b> άνοιξε την Αυλή στο Chrome → πάτησε τις τρεις τελείες ⋮ → «Προσθήκη στην αρχική οθόνη».</p><p>Θα εμφανιστεί εικονίδιο 🏡 όπως σε κάθε εφαρμογή.</p>');
+  h += sec("📜", "Οι κανόνες της Αυλής", rulesHtml());
+  h += sec("✏️", "Επικοινωνία", '<p>Για απορίες, ιδέες ή κάποιο πρόβλημα, γράψε μου:</p><button class="btn big sky" onclick="writeMe()">✏️ Γράψε μου</button>');
+  h += footer();
+  $app.innerHTML = h;
+}
+
+// ---------- καλωσόρισμα ----------
+function rulesHtml() {
+  return '<ol style="padding-left:22px;margin:6px 0">' +
+    '<li>Σεβασμός και καλοσύνη σε όλους.</li>' +
+    '<li>Τίποτα ακατάλληλο: βία, γυμνό, μίσος, προσβολές ή απάτες.</li>' +
+    '<li>Ανεβάζω μόνο δικές μου φωτογραφίες ή με άδεια. Παιδιά μόνο με την άδεια των γονιών τους.</li>' +
+    '<li>Οι αγγελίες είναι αληθινές. Τα χρήματα συμφωνούνται απευθείας μεταξύ μας· η Αυλή δεν μεσολαβεί.</li>' +
+    '<li>Όλα σβήνονται αυτόματα σε 30 ημέρες. Κρατώ τα πρωτότυπα στη συσκευή μου.</li>' +
+    '<li>Ο διαχειριστής μπορεί να σβήσει ό,τι παραβαίνει τους κανόνες.</li></ol>' +
+    '<p class="hint">Το όνομά σου και ό,τι ανεβάζεις φαίνονται μόνο στα μέλη. Μπορείς να σβήσεις ό,τι ανέβασες όποτε θέλεις.</p>';
+}
+function renderWelcome() {
+  var pend = load("avli_request");
+  var h = demoBanner() + '<div class="hero"><div class="sunny">🌻</div><h2>Καλώς ήρθες!</h2><p>Η Αυλή μας είναι ένας ζεστός, κλειστός κύκλος. Εδώ μοιραζόμαστε σκέψεις, ποιήματα, ιστορίες και φωτογραφίες, και στο παζάρι της παρέας ανταλλάζουμε πράγματα με καλοσύνη. Κάθε χώρα έχει τη δική της αυλή. 🌍</p></div>';
+  if (!S.ping.founded) {
+    h += '<div class="card"><h3 style="margin-top:0">👑 Ίδρυση της Αυλής</h3><p class="hint">Μόνο την πρώτη φορά, για τον διαχειριστή.</p>' +
+      '<label>Κωδικός ιδρυτή</label><input type="password" id="acode" autocomplete="off">' +
+      '<label>Το όνομά σου</label><input type="text" id="aname" maxlength="40">' +
+      '<label>Η χώρα σου</label>' + countrySelect("acountry", guessCountry()) +
+      '<button class="btn big" onclick="doSetup()">Ίδρυση</button></div>';
+  }
+  if (S.inviteCode && S.inviteFrom) {
+    h = '<div class="card invite"><div class="bigic">💌</div><h2 style="margin:6px 0;color:var(--terra)">Έχεις πρόσκληση!</h2><p>Ο/Η <b data-u>' + esc(S.inviteFrom) + '</b> σε προσκαλεί στην «Αυλή μας», μια ζεστή παρέα φίλων για να μοιραζόμαστε σκέψεις, φωτογραφίες και ανταλλαγές. 🌻</p>' +
+      '<input type="hidden" id="jcode" value="' + esc(S.inviteCode) + '"><div style="text-align:left">' +
+      '<label>Πώς σε λένε; (όπως θα σε βλέπουν οι φίλοι)</label><input type="text" id="jname" maxlength="40">' +
+      '<label>Σε ποια χώρα ζεις;</label>' + countrySelect("jcountry", guessCountry()) +
+      '<details style="margin-top:12px"><summary><b>Οι κανόνες της Αυλής</b></summary>' + rulesHtml() + '</details>' +
+      '<label style="font-weight:600"><input type="checkbox" id="jacc" style="width:24px;height:24px;vertical-align:middle"> Συμφωνώ με τους κανόνες</label></div>' +
+      '<button class="btn big olive" onclick="doJoin()">🌻 Μπαίνω στην Αυλή</button></div>' + footer();
+    $app.innerHTML = h; return;
+  }
+  if (pend) {
+    h += '<div class="card" id="pendcard">⏳ Η αίτησή σου για πρόσκληση περιμένει έγκριση.<br><button class="btn small ghost" onclick="checkRequest(true)">Έλεγχος τώρα</button></div>';
+  }
+  h += '<div class="card"><h3 style="margin-top:0">🎟️ Έχω πρόσκληση</h3>' +
+    '<label>Κωδικός πρόσκλησης (θα τον βρεις στο μήνυμα που σου έστειλαν)</label><input type="text" id="jcode" placeholder="π.χ. K7PQ-3MZA" value="' + esc(S.inviteCode || "") + '" autocapitalize="characters">' +
+    '<label>Το όνομά σου (όπως θα σε βλέπουν οι φίλοι)</label><input type="text" id="jname" maxlength="40">' +
+    '<label>Η χώρα σου</label>' + countrySelect("jcountry", guessCountry()) +
+    '<details style="margin-top:12px"><summary><b>Οι κανόνες της Αυλής</b></summary>' + rulesHtml() + '</details>' +
+    '<label style="font-weight:600"><input type="checkbox" id="jacc" style="width:24px;height:24px;vertical-align:middle"> Συμφωνώ με τους κανόνες</label>' +
+    '<button class="btn big olive" onclick="doJoin()">Μπαίνω στην Αυλή</button></div>';
+  h += '<div class="card"><h3 style="margin-top:0">🙋 Ζήτα πρόσκληση</h3><p class="hint">Δεν έχεις πρόσκληση; Γράψε δυο λόγια. Μόλις εγκριθεί, θα μπεις αυτόματα από αυτή τη συσκευή.</p>' +
+    '<label>Το όνομά σου</label><input type="text" id="rname" maxlength="40">' +
+    '<label>Πώς σε ξέρουμε; (π.χ. «φίλος του Γιώργου», «από το χωριό»)</label><input type="text" id="rmsg" maxlength="300">' +
+    '<label>Τηλέφωνο ή email (προαιρετικά)</label><input type="text" id="rcontact" maxlength="80">' +
+    '<button class="btn big sky" onclick="doRequest()">Στείλε αίτηση</button></div>';
+  h += '<div class="card"><h3 style="margin-top:0">🔑 Είμαι ήδη μέλος</h3><p class="hint">Για νέο κινητό ή υπολογιστή: γράψε το κλειδί σου.</p>' +
+    '<input type="text" id="lkey" placeholder="AVLI-XXXX-XXXX-XXXX" autocapitalize="characters" autocomplete="off">' +
+    '<button class="btn big sun" onclick="doLogin()">Είσοδος</button></div>' + footer();
+  $app.innerHTML = h;
+  if (pend) checkRequest(false);
+}
+async function doSetup() {
+  try { var r = await api("setup", { body: { admin_code: document.getElementById("acode").value, name: document.getElementById("aname").value, country: document.getElementById("acountry").value } }); await afterJoin(r.key); }
+  catch (e) { toast(e.message); }
+}
+async function doJoin() {
+  try {
+    var r = await api("join", { body: { code: document.getElementById("jcode").value, name: document.getElementById("jname").value, country: document.getElementById("jcountry").value, accept: document.getElementById("jacc").checked } });
+    history.replaceState(null, "", location.pathname); S.inviteCode = null; S.inviteFrom = null; store("avli_request", null);
+    await afterJoin(r.key);
+  } catch (e) { toast(e.message); }
+}
+async function afterJoin(key) {
+  setKey(key); await refreshMe(); S.country = S.me.country; store("avli_country", S.me.country); S.view = "avli"; render(); showKey(true);
+}
+function showKey(first) {
+  modal('<div style="text-align:center;font-size:3em">' + (first ? "🎉" : "🔑") + '</div>' +
+    (first ? '<h2 style="margin:0 0 8px;text-align:center">Καλώς ήρθες στην Αυλή!</h2>' : '<h2 style="margin:0 0 8px;text-align:center">Το κλειδί μου</h2>') +
+    '<p>Σου φτιάξαμε ένα <b>προσωπικό κλειδί</b>, σαν το κλειδί του σπιτιού. Θα το χρειαστείς μόνο αν μπεις από άλλο κινητό ή υπολογιστή.</p>' +
+    '<div class="keybox" data-u>' + esc(getKey()) + '</div>' +
+    '<label>Θέλεις κάτι πιο εύκολο να το θυμάσαι; Γράψ\' το εδώ:</label><input type="text" id="newkey" maxlength="60" placeholder="τουλάχιστον 8 γράμματα ή αριθμούς" autocomplete="off">' +
+    '<button class="btn big sky" onclick="changeKey()">💾 Κράτα αυτό ως κλειδί μου</button>' +
+    '<p class="hint">Μην το δώσεις σε κανέναν· όποιος το ξέρει, μπαίνει ως εσύ.</p>' +
+    '<button class="btn big ghost" onclick="closeModal()">Εντάξει</button>');
+}
+async function changeKey() {
+  var k = document.getElementById("newkey").value.trim();
+  try { await api("setkey", { body: { key: k } }); setKey(k); toast("Το νέο σου κλειδί κρατήθηκε ✔"); showKey(false); } catch (e) { toast(e.message); }
+}
+async function doRequest() {
+  try {
+    var r = await api("request", { body: { name: document.getElementById("rname").value, message: document.getElementById("rmsg").value, contact: document.getElementById("rcontact").value } });
+    r.name = document.getElementById("rname").value; store("avli_request", r); toast("Η αίτηση στάλθηκε ✔"); renderWelcome();
+  } catch (e) { toast(e.message); }
+}
+async function checkRequest(manual) {
+  var p = load("avli_request"); if (!p) return;
+  try {
+    var r = await api("request-status", { query: { id: p.id, secret: p.secret } });
+    if (r.status === "approved" && r.code) {
+      S.inviteCode = r.code; store("avli_request", null); toast("Η αίτησή σου εγκρίθηκε! 🎉 Γράψε το όνομά σου και μπες."); renderWelcome();
+      var n = document.getElementById("jname"); if (n) n.value = p.name || "";
+    } else if (r.status === "rejected" || r.status === "missing") {
+      store("avli_request", null); if (manual) toast("Η αίτηση δεν εγκρίθηκε αυτή τη φορά."); renderWelcome();
+    } else if (manual) toast("Ακόμη σε αναμονή. Κάνε λίγη υπομονή 🙂");
+  } catch (e) { if (manual) toast(e.message); }
+}
+async function doLogin() {
+  var k = document.getElementById("lkey").value.trim();
+  try { await api("login", { body: { key: k } }); setKey(k); await refreshMe(); S.view = "avli"; render(); toast("Καλώς ξαναήρθες!"); }
+  catch (e) { toast(e.message); }
+}
+function footer() { return '<footer>Χρίστος · <a href="#" onclick="writeMe();return false">✏️ Γράψε μου</a><br>Η Αυλή μας · έκδοση ' + VERSION + (S.mode === "demo" ? " · 🧪 δοκιμή" : "") + '</footer>'; }
+
+// ---------- ροή αναρτήσεων ----------
+function expiringBanner() {
+  var ex = (S.me && S.me.expiring) || []; if (!ex.length) return "";
+  return ex.slice(0, 3).map(function (p) {
+    var name = p.title || (p.body || "").slice(0, 40) || "χωρίς τίτλο", d = daysLeft(p.expires);
+    return '<div class="demo">⏰ Η ανάρτησή σου «' + esc(name) + '» λήγει ' + (d <= 1 ? "σε λιγότερο από μία ημέρα" : "σε " + d + " ημέρες") + '. <button class="btn small olive" onclick="renew(\'' + p.id + '\')">Ανανέωση</button></div>';
+  }).join("");
+}
+function tipsHtml() {
+  return '<details class="card tips"><summary>🛡️ Συμβουλές ασφαλείας για ανταλλαγές</summary><ul style="padding-left:22px">' +
+    '<li>Ποτέ προκαταβολή σε άγνωστο.</li>' +
+    '<li>Συνάντηση σε δημόσιο χώρο, και καλύτερα με συνοδεία.</li>' +
+    '<li>Για ακίνητα: πρώτα έλεγχος τίτλου στο Κτηματολόγιο και δικηγόρος, μετά οποιαδήποτε πληρωμή.</li>' +
+    '<li>Ποτέ κωδικούς τράπεζας ή στοιχεία κάρτας σε μήνυμα.</li>' +
+    '<li>Αν κάτι φαίνεται πολύ καλό για να είναι αληθινό, μάλλον δεν είναι.</li></ul></details>';
+}
+async function renderFeed(section, more) {
+  var f = S.filters, isM = section === "market";
+  if (!more) {
+    var h = demoBanner() + expiringBanner() + '<button class="btn big ghost" style="justify-content:space-between;margin:0 0 12px" onclick="pickCountry()"><span style="text-align:left">📍 ' + esc(cfull(curCountry())) + '</span><span style="white-space:nowrap;color:var(--sky)">🌍 Άλλη χώρα</span></button>';
+    if (isM) {
+      h += '<h2 style="margin:4px 0 2px;color:var(--olive)">🧺 Το παζάρι της παρέας στην αυλή μας</h2><div class="hint" style="margin-bottom:10px">Πουλάμε, ψάχνουμε, χαρίζουμε και ζητάμε, με εμπιστοσύνη και καλοσύνη.</div><div class="tabs">' + ['', 'Πουλάω', 'Ψάχνω', 'Χαρίζω', 'Χρειάζομαι'].map(function (k) {
+        var lab = { "": "Όλα", "Πουλάω": "🏷️ Πουλάω", "Ψάχνω": "🔍 Ψάχνω", "Χαρίζω": "🎁 Χαρίζω", "Χρειάζομαι": "🙋 Χρειάζομαι" }[k];
+        return '<button class="chip ' + (f.market === k ? "on" : "") + '" onclick="S.filters.market=\'' + k + '\';renderFeed(\'market\')">' + lab + '</button>';
+      }).join("") + '</div>' +
+        '<div class="row" style="margin-bottom:12px"><select style="flex:1" onchange="S.filters.cat=this.value;renderFeed(\'market\')"><option value="">Όλες οι κατηγορίες</option>' +
+        S.ping.cats.map(function (c) { return '<option ' + (f.cat === c ? "selected" : "") + '>' + esc(c) + '</option>'; }).join("") + '</select></div>' +
+        '<div class="row" style="margin-bottom:12px"><select id="farea" style="flex:1" onchange="S.filters.area=this.value;renderFeed(\'market\')"><option value="">📍 Όλες οι περιοχές</option></select></div>' +
+        '<div class="row" style="margin-bottom:12px"><input type="text" id="srch" style="flex:1" placeholder="🔎 Αναζήτηση, π.χ. Πάφος, ψυγείο" value="' + esc(f.search) + '" onkeydown="if(event.key===\'Enter\'){S.filters.search=this.value;renderFeed(\'market\')}"><button class="btn small sky" onclick="S.filters.search=document.getElementById(\'srch\').value;renderFeed(\'market\')">Βρες</button></div>' + tipsHtml();
+    } else {
+      h += '<div class="tabs">' + [''].concat(S.ping.kinds).map(function (k) {
+        return '<button class="chip ' + (f.avli === k ? "on" : "") + '" onclick="S.filters.avli=\'' + k + '\';renderFeed(\'avli\')">' + (k || "Όλα") + '</button>';
+      }).join("") + '</div>';
+    }
+    h += '<div id="list"><div class="empty">Φορτώνει…</div></div><div id="morebox"></div>' + footer();
+    $app.innerHTML = h; S.oldest = null;
+  }
+  try {
+    if (isM && !more) areasFor(curCountry()).then(function (list) { var sel = document.getElementById("farea"); if (!sel) return; list.forEach(function (a) { var o = document.createElement("option"); o.value = a; o.textContent = a; if (a === f.area) o.selected = true; sel.appendChild(o); }); });
+    var q = { country: curCountry(), area: isM ? f.area : "", section: section, kind: isM ? f.market : f.avli, category: isM ? f.cat : "", search: isM ? f.search : "", before: more ? S.oldest : "" };
+    var r = await api("feed", { query: q });
+    var list = document.getElementById("list"); if (!list) return;
+    if (!more) list.innerHTML = "";
+    if (!r.posts.length && !more) {
+      list.innerHTML = '<div class="empty"><div class="e">' + (isM ? "🧺" : "🌿") + '</div>' + (isM ? "Δεν υπάρχουν ακόμη αγγελίες στο παζάρι της παρέας εδώ." : "Δεν υπάρχουν ακόμη αναρτήσεις στην αυλή αυτής της χώρας.") + '<br><button class="btn" style="margin-top:14px" onclick="startNew(\'' + section + '\')">Κάνε την πρώτη!</button></div>';
+    }
+    r.posts.forEach(function (p) { list.insertAdjacentHTML("beforeend", postHtml(p)); });
+    if (r.posts.length) S.oldest = r.posts[r.posts.length - 1].created;
+    document.getElementById("morebox").innerHTML = r.posts.length === 15 ? '<button class="btn big ghost" onclick="renderFeed(\'' + section + '\',true)">Δείξε περισσότερα</button>' : "";
+  } catch (e) { toast(e.message); }
+}
+function postHtml(p) {
+  var isM = p.section === "market";
+  var h = '<div class="card" id="p_' + p.id + '">';
+  h += '<div class="post-head">' + avatar(p.author, p.member_id) + '<div style="flex:1"><div class="who" data-u onclick="openMember(\'' + p.member_id + '\')">' + esc(p.author) + '</div><div class="when">' + ago(p.created) + (p.area ? " · 📍 " + esc(p.area) : "") + (p.country && p.country !== curCountry() ? " · " + esc(cfull(p.country)) : "") + '</div></div>' +
+    '<span class="badge b-' + esc(p.kind) + '">' + esc(p.kind) + '</span></div>';
+  if (p.hidden) h += '<div class="expire" style="background:#FFD9D2">🚫 Κρυμμένη μέχρι να την ελέγξει ο διαχειριστής</div>';
+  if (isM && p.category) h += '<div class="hint">' + esc(p.category) + '</div>';
+  if (p.title) h += '<div class="title" data-u>' + esc(p.title) + '</div>';
+  if (isM && p.price) h += '<div class="price" data-u>' + esc(p.price) + '</div>';
+  if (p.body) h += '<div class="body' + (p.kind === "Ποίημα" ? " poem" : "") + '" data-u>' + linkify(p.body) + '</div>';
+  if (p.title || p.body) h += '<button class="trbtn" onclick="translatePost(\'' + p.id + '\',this)">🌐 Μετάφραση</button>';
+  if (p.photos && p.photos.length) {
+    h += '<div class="photos n' + p.photos.length + '">' + p.photos.map(function (id) { return '<img loading="lazy" src="' + photoSrc(id) + '" onclick="viewPhoto(this.src)" alt="">'; }).join("") + '</div>';
+  }
+  if (p.youtube) h += '<div class="yt" onclick="playYt(this,\'' + esc(p.youtube) + '\')"><img loading="lazy" src="https://i.ytimg.com/vi/' + esc(p.youtube) + '/hqdefault.jpg" alt=""><div class="play">▶️</div></div>';
+  if (p.mine) h += '<div class="expire">⏳ Σβήνεται σε ' + daysLeft(p.expires) + ' ημέρες · <a href="#" onclick="renew(\'' + p.id + '\');return false">ανανέωση</a></div>';
+  h += '<div class="actions">' +
+    '<button class="act ' + (p.my_heart ? "on" : "") + '" onclick="react(\'' + p.id + '\',\'heart\',this)">❤️ <span>' + (p.heart || "") + '</span></button>' +
+    '<button class="act candle ' + (p.my_candle ? "on" : "") + '" onclick="react(\'' + p.id + '\',\'candle\',this)" title="Σε σκέφτομαι">🕯️ <span>' + (p.candle || "") + '</span></button>' +
+    '<button class="act" onclick="toggleComments(\'' + p.id + '\')">💬 ' + (p.comments || "") + '</button>';
+  if (isM && !p.mine) h += '<button class="act" style="background:var(--olive);color:#fff" onclick="openThread(\'' + p.member_id + '\',\'' + p.id + '\')">✉️ Μήνυμα</button>';
+  h += '<button class="act" style="flex:0;min-width:56px" onclick="postMenu(\'' + p.id + '\',' + (p.mine ? 1 : 0) + ')">⋯</button></div>';
+  h += '<div class="comments" id="c_' + p.id + '" style="display:none"></div></div>';
+  return h;
+}
+function playYt(el, id) { el.onclick = null; el.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>'; }
+function viewPhoto(src) { $layer.innerHTML = '<div class="viewer" onclick="closeModal()"><img src="' + src + '"><button class="x">✕</button></div>'; }
+async function react(id, type, btn) {
+  try {
+    var r = await api("react", { body: { id: id, type: type } });
+    var sp = btn.querySelector("span"), n = (parseInt(sp.textContent, 10) || 0) + (r.on ? 1 : -1);
+    sp.textContent = n > 0 ? n : ""; btn.classList.toggle("on", r.on);
+  } catch (e) { toast(e.message); }
+}
+async function toggleComments(id, keep) {
+  var box = document.getElementById("c_" + id);
+  if (!keep && box.style.display !== "none") { box.style.display = "none"; return; }
+  box.style.display = "block"; box.innerHTML = '<div class="hint">Φορτώνει…</div>';
+  try {
+    var r = await api("comments", { query: { id: id } });
+    box.innerHTML = r.comments.map(function (c) {
+      var del = (c.member_id === S.me.id || S.me.is_admin) ? ' <a href="#" class="hint" onclick="delComment(\'' + id + '\',\'' + c.id + '\');return false">σβήσιμο</a>' : "";
+      return '<div class="cm"><b data-u onclick="openMember(\'' + c.member_id + '\')">' + esc(c.author) + '</b> <span class="when">' + ago(c.created) + del + '</span><div class="body" data-u>' + linkify(c.body) + '</div></div>';
+    }).join("") +
+      '<div class="row"><input type="text" id="ci_' + id + '" style="flex:1" placeholder="Γράψε ένα καλό λόγο…" maxlength="1000" onkeydown="if(event.key===\'Enter\')addComment(\'' + id + '\')"><button class="btn small" onclick="addComment(\'' + id + '\')">Στείλε</button></div>';
+  } catch (e) { box.innerHTML = esc(e.message); }
+}
+async function addComment(id) {
+  var i = document.getElementById("ci_" + id); if (!i.value.trim()) return;
+  try { await api("comment", { body: { id: id, body: i.value } }); toggleComments(id, true); var cb = document.querySelector("#p_" + id + " .act:nth-child(3)"); if (cb) cb.textContent = "💬 " + ((parseInt(cb.textContent.replace(/\D/g, ""), 10) || 0) + 1); } catch (e) { toast(e.message); }
+}
+async function delComment(pid, cid) { if (!confirm(T("Να σβηστεί το σχόλιο;"))) return; try { await api("uncomment", { body: { cid: cid } }); toggleComments(pid, true); } catch (e) { toast(e.message); } }
+function postMenu(id, mine) {
+  var h = '<h3 style="margin-top:0">Επιλογές</h3>';
+  if (mine) h += '<button class="btn big olive" onclick="renew(\'' + id + '\')">⏳ Ανανέωση για 30 ημέρες</button><button class="btn big" onclick="delPost(\'' + id + '\')">🗑️ Σβήσιμο</button>';
+  else {
+    h += '<button class="btn big sky" onclick="closeModal();openThread(S.lastAuthor[\'' + id + '\'],\'' + id + '\')">✉️ Προσωπικό μήνυμα</button>';
+    h += '<label>Κάτι δεν πάει καλά; Γράψε τι:</label><input type="text" id="rreason" maxlength="300" placeholder="π.χ. ακατάλληλο, απάτη"><button class="btn big plum" onclick="reportPost(\'' + id + '\')">⚠️ Ανάφερε στον διαχειριστή</button>';
+    if (S.me.is_admin) h += '<hr><button class="btn big" onclick="delPost(\'' + id + '\')">🛡️ Σβήσιμο (διαχειριστής)</button>';
+  }
+  h += '<button class="btn big ghost" onclick="closeModal()">Άκυρο</button>';
+  modal(h);
+}
+S.lastAuthor = {};
+var _postHtml = postHtml; postHtml = function (p) { S.lastAuthor[p.id] = p.member_id; return _postHtml(p); };
+async function renew(id) { try { await api("renew", { body: { id: id } }); closeModal(); toast("Ανανεώθηκε για άλλες 30 ημέρες ✔"); await refreshMe(); render(); } catch (e) { toast(e.message); } }
+async function delPost(id) {
+  if (!confirm(T("Σίγουρα να σβηστεί; Δεν γυρίζει πίσω."))) return;
+  try { await api("delete", { body: { id: id } }); closeModal(); var el = document.getElementById("p_" + id); if (el) el.remove(); toast("Σβήστηκε."); refreshMe().then(drawNav); } catch (e) { toast(e.message); }
+}
+async function reportPost(id) { try { await api("report", { body: { id: id, reason: document.getElementById("rreason").value } }); closeModal(); toast("Ευχαριστούμε. Ο διαχειριστής θα το δει."); } catch (e) { toast(e.message); } }
+
+// ---------- νέα ανάρτηση ----------
+function startNew(section) { S.draft = { section: section, kind: section === "market" ? "Πουλάω" : "Σκέψη", photos: [] }; go("new"); }
+function renderNew() {
+  var d = S.draft;
+  if (!d) {
+    $app.innerHTML = demoBanner() + '<h2>Τι θέλεις να μοιραστείς;</h2><div class="big-choice">' +
+      '<button class="btn" onclick="startNew(\'avli\')"><span class="ic">🏡</span>Ανάρτηση στην Αυλή<span class="hint" style="color:#fff">σκέψη, ποίημα, ιστορία, φωτογραφίες, βίντεο</span></button>' +
+      '<button class="btn olive" onclick="startNew(\'market\')"><span class="ic">🧺</span>Αγγελία στο παζάρι της παρέας<span class="hint" style="color:#fff">πουλάω, ψάχνω, χαρίζω, χρειάζομαι</span></button></div>' + footer();
+    return;
+  }
+  var isM = d.section === "market", kinds = isM ? S.ping.market : S.ping.kinds;
+  var labels = { "Πουλάω": "🏷️ Πουλάω", "Ψάχνω": "🔍 Ψάχνω", "Χαρίζω": "🎁 Χαρίζω", "Χρειάζομαι": "🙋 Χρειάζομαι", "Σκέψη": "💭 Σκέψη", "Ποίημα": "📜 Ποίημα", "Ιστορία": "📖 Ιστορία", "Φωτογραφίες": "📷 Φωτογραφίες", "Βίντεο": "🎬 Βίντεο", "Συνταγή": "🍲 Συνταγή", "Άλλο": "✨ Άλλο" };
+  var h = demoBanner() + '<div class="card"><h2 style="margin-top:0">' + (isM ? "🧺 Νέα αγγελία στο παζάρι της παρέας στην αυλή μας" : "🏡 Νέα ανάρτηση") + '</h2>' +
+    '<label>Είδος</label><div class="chips">' + kinds.map(function (k) { return '<button class="chip ' + (d.kind === k ? "on" : "") + '" onclick="saveDraft();S.draft.kind=\'' + k + '\';renderNew()">' + labels[k] + '</button>'; }).join("") + '</div>';
+  if (isM) {
+    h += '<label>Κατηγορία</label><select id="dcat">' + S.ping.cats.map(function (c) { return '<option ' + (d.category === c ? "selected" : "") + '>' + esc(c) + '</option>'; }).join("") + '</select>';
+    h += '<label>Τίτλος</label><input type="text" id="dtitle" maxlength="120" placeholder="π.χ. Διαμέρισμα 2 υπνοδωματίων" value="' + esc(d.title || "") + '">';
+    if (d.kind !== "Χαρίζω") h += '<label>' + (d.kind === "Πουλάω" ? "Τιμή" : "Ποσό που διαθέτω (προαιρετικά)") + '</label><input type="text" id="dprice" maxlength="40" placeholder="π.χ. 120 €" value="' + esc(d.price || "") + '">';
+    var regs = REGIONS[curCountry()] || [], ar = d.area != null ? d.area : (S.me.area || ""), other = ar && regs.indexOf(ar) < 0;
+    h += '<label>Περιοχή</label><select id="dareasel" onchange="document.getElementById(\'darea\').style.display=this.value===\'__o\'?\'block\':\'none\'"><option value="">— Διάλεξε περιοχή —</option>' +
+      regs.map(function (r) { return '<option value="' + esc(r) + '"' + (r === ar ? " selected" : "") + '>' + esc(r) + '</option>'; }).join("") +
+      '<option value="__o"' + (other || (!regs.length) ? " selected" : "") + '>✏️ Άλλη περιοχή…</option></select>' +
+      '<input type="text" id="darea" maxlength="60" placeholder="Γράψε την περιοχή" value="' + esc(other ? ar : "") + '" style="margin-top:8px;display:' + (other || !regs.length ? "block" : "none") + '">';
+    h += '<label>Περιγραφή</label><textarea id="dbody" maxlength="6000" placeholder="Μέγεθος, κατάσταση, τι ακριβώς ψάχνεις…">' + esc(d.body || "") + '</textarea>';
+  } else {
+    h += '<label>Τίτλος (προαιρετικά)</label><input type="text" id="dtitle" maxlength="120" value="' + esc(d.title || "") + '">';
+    h += '<label>' + (d.kind === "Ποίημα" ? "Το ποίημα" : d.kind === "Ιστορία" ? "Η ιστορία" : "Κείμενο") + '</label><textarea id="dbody" maxlength="6000" style="min-height:' + (d.kind === "Ποίημα" || d.kind === "Ιστορία" ? 220 : 130) + 'px" placeholder="Γράψε εδώ…">' + esc(d.body || "") + '</textarea>';
+    h += '<label>🎬 Βίντεο από το YouTube (προαιρετικά)</label><input type="url" id="dyt" placeholder="Επικόλλησε τον σύνδεσμο του βίντεο" value="' + esc(d.youtube || "") + '"><div class="hint">Ανέβασε πρώτα το βίντεο στο YouTube (μπορεί να είναι «μη καταχωρισμένο») και επικόλλησε εδώ τον σύνδεσμο.</div>';
+  }
+  h += '<label>📷 Φωτογραφίες (έως 4)</label><div class="thumbs">' + d.photos.map(function (src, i) { return '<div><img src="' + src + '"><button onclick="saveDraft();S.draft.photos.splice(' + i + ',1);renderNew()">✕</button></div>'; }).join("") + '</div>';
+  if (d.photos.length < 4) h += '<label class="btn ghost" style="margin-top:8px;display:inline-flex">➕ Πρόσθεσε φωτογραφία<input type="file" accept="image/*" multiple style="display:none" onchange="addPhotos(this)"></label>';
+  h += '<div class="demo" style="margin-top:14px">📍 Θα δημοσιευτεί στην αυλή της χώρας: <b>' + esc(cfull(curCountry())) + '</b> <a href="#" onclick="saveDraft();pickCountry();return false">αλλαγή</a></div>';
+  h += '<div class="hint" style="margin-top:12px">⏳ Θα σβηστεί αυτόματα σε 30 ημέρες (μπορείς να την ανανεώσεις).</div>' +
+    '<button class="btn big" id="pubbtn" onclick="publish()">Δημοσίευση</button><button class="btn big ghost" onclick="S.draft=null;renderNew()">Άκυρο</button></div>' + footer();
+  $app.innerHTML = h;
+}
+function saveDraft() {
+  var d = S.draft; if (!d) return;
+  ["title", "body", "price", "area"].forEach(function (k) { var el = document.getElementById("d" + k); if (el) d[k] = el.value; });
+  var asel = document.getElementById("dareasel"); if (asel && asel.value !== "__o") d.area = asel.value;
+  var c = document.getElementById("dcat"); if (c) d.category = c.value;
+  var y = document.getElementById("dyt"); if (y) d.youtube = y.value;
+}
+async function addPhotos(input) {
+  saveDraft(); var files = Array.prototype.slice.call(input.files, 0, 4 - S.draft.photos.length);
+  toast("Ετοιμάζω τις φωτογραφίες…");
+  for (var i = 0; i < files.length; i++) { try { S.draft.photos.push(await shrink(files[i])); } catch (e) { toast(e.message); } }
+  renderNew();
+}
+async function publish() {
+  saveDraft(); var d = S.draft, b = document.getElementById("pubbtn");
+  if (d.youtube && !AvliCore.ytId(d.youtube)) return toast("Ο σύνδεσμος βίντεο δεν είναι από το YouTube.");
+  b.disabled = true; b.textContent = "Ανεβαίνει…";
+  try {
+    d.country = curCountry(); await api("post", { body: d });
+    var sec = d.section; S.draft = null; toast("Δημοσιεύτηκε! 🌻"); S.filters.avli = ""; S.filters.market = ""; S.filters.cat = ""; S.filters.search = ""; go(sec);
+  } catch (e) { toast(e.message); b.disabled = false; b.textContent = "Δημοσίευση"; }
+}
+
+// ---------- μηνύματα ----------
+async function renderConversations() {
+  $app.innerHTML = demoBanner() + '<h2>✉️ Μηνύματα</h2><div id="convs"><div class="empty">Φορτώνει…</div></div>' + footer();
+  try {
+    var r = await api("conversations"), box = document.getElementById("convs");
+    if (!r.conversations.length) { box.innerHTML = '<div class="empty"><div class="e">💌</div>Δεν έχεις μηνύματα ακόμη.<br>Πάτησε «✉️ Μήνυμα» σε μια αγγελία ή στη σελίδα ενός φίλου.</div>'; return; }
+    box.innerHTML = r.conversations.map(function (c) {
+      return '<div class="card conv" onclick="openThread(\'' + c.other + '\')">' + avatar(c.name, c.other) + '<div style="flex:1;min-width:0"><b data-u>' + esc(c.name) + '</b> <span class="when">' + ago(c.last) + '</span><div class="hint" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis" data-u>' + esc(c.preview) + '</div></div>' + (c.unread ? '<span class="badge" style="background:#D9534F">' + c.unread + '</span>' : "") + '</div>';
+    }).join("");
+  } catch (e) { toast(e.message); }
+}
+function openThread(id, postId) { closeModal(); S.threadWith = id; S.threadPost = postId || null; go("thread"); }
+async function renderThread(id, postId) {
+  try {
+    var r = await api("thread", { query: { with: id } });
+    var h = '<div class="row" style="margin-bottom:10px"><button class="btn small ghost" onclick="go(\'msgs\')">← Πίσω</button><h2 style="margin:0">' + esc(r.name) + '</h2></div><div class="card" id="msgs">';
+    h += r.messages.length ? r.messages.map(function (m) {
+      return '<div class="bubble ' + (m.from_id === S.me.id ? "mine" : "them") + '">' + (m.post_title ? '<span class="t">για: «' + esc(m.post_title) + '»</span>' : "") + '<span data-u>' + linkify(m.body) + '</span><span class="t">' + ago(m.created) + '</span></div>';
+    }).join("") : '<div class="hint">Γράψε το πρώτο μήνυμα. Να θυμάσαι: ποτέ στοιχεία κάρτας ή κωδικούς σε μήνυμα.</div>';
+    h += '</div><div class="card"><textarea id="mbody" style="min-height:90px" placeholder="Γράψε το μήνυμά σου…" maxlength="2000"></textarea><button class="btn big" onclick="sendMsg(\'' + id + '\')">Αποστολή</button></div>' + footer();
+    $app.innerHTML = h; window.scrollTo(0, document.body.scrollHeight);
+    refreshMe().then(drawNav).catch(function () { });
+  } catch (e) { toast(e.message); go("msgs"); }
+}
+async function sendMsg(id) {
+  var t = document.getElementById("mbody").value; if (!t.trim()) return;
+  try { await api("message", { body: { to: id, body: t, post_id: S.threadPost || "" } }); S.threadPost = null; renderThread(id); } catch (e) { toast(e.message); }
+}
+
+// ---------- μέλη ----------
+function openMember(id) { if (!id) return; closeModal(); S.memberId = id; go("member"); }
+async function renderMemberPage(id) {
+  $app.innerHTML = '<div class="empty">Φορτώνει…</div>';
+  try {
+    var m = await api("member", { query: { id: id } });
+    var h = '<button class="btn small ghost" onclick="go(\'avli\')">← Αυλή</button><div class="card" style="text-align:center;margin-top:10px"><div style="display:flex;justify-content:center">' + avatar(m.name, m.id).replace('class="avatar"', 'class="avatar" style="width:90px;height:90px;font-size:2.2em;background:' + colorOf(m.id) + '"') + '</div><h2 style="margin:10px 0 0">' + esc(m.name) + '</h2>' +
+      '<div>' + esc(cfull(m.country)) + (m.area ? ' · 📍 ' + esc(m.area) : '') + '</div>' + (m.about ? '<p class="body" data-u>' + esc(m.about) + '</p>' : "") + '<div class="hint">Μέλος ' + ago(m.created).replace("πριν από", "εδώ και") + '</div>' +
+      (m.id !== S.me.id ? '<button class="btn big olive" onclick="openThread(\'' + m.id + '\')">✉️ Στείλε μήνυμα</button>' : "") + '</div><div id="list"></div>' + footer();
+    $app.innerHTML = h;
+    var a = await api("feed", { query: { section: "avli", member: id } }), b = await api("feed", { query: { section: "market", member: id } });
+    var all = a.posts.concat(b.posts).sort(function (x, y) { return y.created - x.created; });
+    document.getElementById("list").innerHTML = all.length ? all.map(postHtml).join("") : '<div class="empty">Καμία ανάρτηση αυτόν τον μήνα.</div>';
+  } catch (e) { toast(e.message); go("avli"); }
+}
+
+// ---------- εγώ ----------
+async function renderMe() {
+  var me = S.me;
+  var h = demoBanner() + expiringBanner() + '<div class="card"><h2 style="margin-top:0">🙂 Τα στοιχεία μου</h2>' +
+    '<label>Όνομα</label><input type="text" id="pname" maxlength="40" value="' + esc(me.name) + '">' +
+    '<label>Η χώρα μου</label>' + countrySelect("pcountry", me.country) +
+    '<label>Περιοχή</label><input type="text" id="parea" maxlength="60" value="' + esc(me.area || "") + '" placeholder="π.χ. Πάφος">' +
+    '<label>Λίγα λόγια για μένα</label><textarea id="pabout" maxlength="300" style="min-height:90px">' + esc(me.about || "") + '</textarea>' +
+    '<button class="btn big olive" onclick="saveProfile()">Αποθήκευση</button></div>';
+  h += '<div class="card"><h2 style="margin-top:0">🎟️ Προσκλήσεις</h2><p>Κάλεσε ανθρώπους που εμπιστεύεσαι. ' + (me.is_admin ? "Ως διαχειριστής έχεις απεριόριστες." : "Σου απομένουν <b>" + me.invites_left + "</b>.") + '</p>' +
+    '<button class="btn big sun" onclick="newInvite()" ' + (!me.is_admin && me.invites_left <= 0 ? "disabled" : "") + '>➕ Νέα πρόσκληση</button><div id="invlist"></div></div>';
+  h += '<div class="card"><h2 style="margin-top:0">📝 Οι αναρτήσεις μου</h2><div id="mine"><div class="hint">Φορτώνει…</div></div></div>';
+  h += '<div class="card"><h2 style="margin-top:0">🔑 Ασφάλεια</h2><button class="btn big ghost" onclick="showKey(false)">🔑 Το κλειδί μου (δες ή άλλαξέ το)</button>' +
+    '<details style="margin-top:10px"><summary><b>Οι κανόνες της Αυλής</b></summary>' + rulesHtml() + '</details>' +
+    '<button class="btn big ghost" onclick="logout()">🚪 Έξοδος από αυτή τη συσκευή</button></div>' + footer();
+  $app.innerHTML = h;
+  loadInvites();
+  try {
+    var r = await api("mine"), box = document.getElementById("mine");
+    box.innerHTML = r.posts.length ? r.posts.map(function (p) {
+      return '<div class="cm"><b>' + esc(p.title || (p.body || "").slice(0, 50) || p.kind) + '</b><div class="hint">' + esc(p.section === "market" ? "Παζάρι · " + p.kind : "Αυλή · " + p.kind) + ' · σβήνεται σε ' + daysLeft(p.expires) + ' ημέρες</div>' +
+        '<div class="row" style="margin-top:6px"><button class="btn small olive" onclick="renew(\'' + p.id + '\')">⏳ Ανανέωση</button><button class="btn small" onclick="delPost(\'' + p.id + '\').then(function(){renderMe()})">🗑️ Σβήσιμο</button></div></div>';
+    }).join("") : '<div class="hint">Δεν έχεις αναρτήσεις αυτή τη στιγμή.</div>';
+  } catch (e) { }
+}
+async function saveProfile() {
+  try { await api("profile", { body: { name: document.getElementById("pname").value, area: document.getElementById("parea").value, about: document.getElementById("pabout").value, country: document.getElementById("pcountry").value } }); await refreshMe(); S.country = S.me.country; store("avli_country", S.me.country); toast("Αποθηκεύτηκε ✔"); drawNav(); } catch (e) { toast(e.message); }
+}
+function inviteLink(code) { return S.mode === "demo" ? "(ο σύνδεσμος θα υπάρχει όταν η Αυλή ανέβει στο διαδίκτυο)" : location.origin + location.pathname + "#invite=" + code; }
+function inviteText(code) { return T("🌻 Σε προσκαλώ στην «Αυλή μας», μια ζεστή παρέα φίλων για να μοιραζόμαστε σκέψεις, φωτογραφίες και ανταλλαγές.") + "\n\n" + T("Πάτησε εδώ για να μπεις:") + "\n" + inviteLink(code) + "\n\n(" + T("κωδικός πρόσκλησης") + ": " + code + ")\n— " + S.me.name; }
+async function newInvite() {
+  try {
+    var r = await api("invite", { body: {} }); await refreshMe();
+    modal('<div class="invite" style="border-radius:18px;padding:16px;margin:-4px"><div class="bigic">💌</div><h2 style="margin:6px 0;color:var(--terra)">Η πρόσκλησή σου είναι έτοιμη!</h2>' +
+      '<p>Στείλ\' τη σε έναν άνθρωπο που αγαπάς ή εμπιστεύεσαι. Θα λάβει ένα μήνυμα με σύνδεσμο· πατώντας τον, μπαίνει στην Αυλή.</p>' +
+      '<button class="btn big olive" onclick="shareText(\'Η Αυλή μας\', inviteText(\'' + r.code + '\'))">📤 Στείλε την πρόσκληση</button>' +
+      '<p class="hint">Με Viber, WhatsApp, μήνυμα ή email. Ισχύει για ένα άτομο.<br>Κωδικός πρόσκλησης, αν χρειαστεί: <b data-u>' + r.code + '</b></p></div>' +
+      '<button class="btn big ghost" onclick="closeModal();renderMe()">Κλείσιμο</button>');
+  } catch (e) { toast(e.message); }
+}
+async function loadInvites() {
+  try {
+    var r = await api("invites"), box = document.getElementById("invlist"); if (!box || !r.invites.length) return;
+    box.innerHTML = '<hr>' + r.invites.map(function (i) {
+      return '<div class="row" style="justify-content:space-between;margin:6px 0"><span style="font-family:monospace;font-weight:800">' + i.code + '</span>' +
+        (i.used ? '<span class="hint">✔ ' + esc(i.used_name || "χρησιμοποιήθηκε") + '</span>' : '<button class="btn small ghost" onclick="shareText(\'Η Αυλή μας\', inviteText(\'' + i.code + '\'))">📤 Στείλε</button>') + '</div>';
+    }).join("");
+  } catch (e) { }
+}
+function logout() {
+  if (!confirm(T("Έχεις φυλάξει το κλειδί σου; Χωρίς αυτό δεν θα μπορείς να ξαναμπείς."))) return;
+  setKey(""); S.me = null; S.view = "avli"; render();
+}
+
+// ---------- φύλαξη (διαχειριστής) ----------
+async function renderAdmin() {
+  $app.innerHTML = '<div class="empty">Φορτώνει…</div>';
+  try {
+    var r = await api("admin");
+    var h = demoBanner() + '<div class="card"><h2 style="margin-top:0">🙋 Αιτήσεις για πρόσκληση (' + r.requests.length + ')</h2>';
+    h += r.requests.length ? r.requests.map(function (q) {
+      return '<div class="cm"><b>' + esc(q.name) + '</b> <span class="when">' + ago(q.created) + '</span><div class="body">' + esc(q.message) + '</div>' + (q.contact ? '<div class="hint">📞 ' + esc(q.contact) + '</div>' : "") +
+        '<div class="row" style="margin-top:8px"><button class="btn small olive" onclick="adm(\'approve\',\'' + q.id + '\')">✔ Έγκριση</button><button class="btn small ghost" onclick="adm(\'reject\',\'' + q.id + '\')">✕ Απόρριψη</button></div></div>';
+    }).join("") : '<div class="hint">Καμία αίτηση σε αναμονή.</div>';
+    h += '<p class="hint">Με την έγκριση, ο άνθρωπος μπαίνει μόνος του από τη συσκευή του, χωρίς να του στείλεις τίποτα.</p></div>';
+    h += '<div class="card"><h2 style="margin-top:0">⚠️ Αναφορές (' + r.reports.length + ')</h2>';
+    h += r.reports.length ? r.reports.map(function (p) {
+      return '<div class="cm"><b>' + esc(p.title || (p.body || "").slice(0, 60)) + '</b> — ' + esc(p.author) + '<div class="hint">' + p.n + ' αναφορές' + (p.hidden ? " · κρυμμένη" : "") + ': ' + esc(p.reasons || "") + '</div>' +
+        '<div class="row" style="margin-top:8px"><button class="btn small" onclick="adminDelete(\'' + p.id + '\')">🗑️ Σβήσιμο</button><button class="btn small olive" onclick="adm(\'keep\',\'' + p.id + '\')">✔ Είναι εντάξει</button></div></div>';
+    }).join("") : '<div class="hint">Καμία αναφορά. Όλα ήρεμα στην Αυλή 🌿</div>';
+    h += '</div><div class="card"><h2 style="margin-top:0">👥 Μέλη (' + r.members.length + ')</h2>';
+    h += r.members.map(function (m) {
+      return '<div class="cm"><b>' + esc(m.name) + '</b> ' + flag(m.country) + (m.is_admin ? " 👑" : "") + (m.banned ? ' <span class="badge" style="background:#D9534F">αποκλεισμένο</span>' : "") +
+        '<div class="hint">' + (m.invited_by_name ? "Κάλεσμα από: " + esc(m.invited_by_name) + " · " : "") + m.posts + ' αναρτήσεις · προσκλήσεις: ' + (m.is_admin ? "∞" : m.invites_left) + '</div>' +
+        (m.is_admin ? "" : '<div class="row" style="margin-top:8px"><button class="btn small sun" onclick="adm(\'gift\',\'' + m.id + '\')">+3 προσκλήσεις</button><button class="btn small sky" onclick="admKey(\'' + m.id + '\')">🔑 Νέο κλειδί</button><button class="btn small ' + (m.banned ? "olive" : "") + '" onclick="admBan(\'' + m.id + '\',' + (m.banned ? 0 : 1) + ')">' + (m.banned ? "Επαναφορά" : "🚫 Αποκλεισμός") + '</button></div>') + '</div>';
+    }).join("") + '</div>' + footer();
+    $app.innerHTML = h;
+  } catch (e) { toast(e.message); }
+}
+async function adm(what, id) { try { await api("admin/" + what, { body: { id: id } }); toast("Έγινε ✔"); await refreshMe(); renderAdmin(); } catch (e) { toast(e.message); } }
+async function adminDelete(id) { if (!confirm("Να σβηστεί η ανάρτηση;")) return; try { await api("delete", { body: { id: id } }); await refreshMe(); renderAdmin(); } catch (e) { toast(e.message); } }
+async function admBan(id, on) { if (on && !confirm("Να αποκλειστεί αυτό το μέλος; Οι αναρτήσεις του θα κρυφτούν.")) return; try { await api("admin/ban", { body: { id: id, on: !!on } }); renderAdmin(); } catch (e) { toast(e.message); } }
+async function admKey(id) {
+  if (!confirm("Νέο κλειδί για αυτό το μέλος; Το παλιό θα πάψει να ισχύει. (Για όποιον έχασε το κινητό του.)")) return;
+  try { var r = await api("admin/newkey", { body: { id: id } }); modal('<h3 style="margin-top:0">🔑 Νέο κλειδί</h3><p>Δώσε το στο μέλος με ασφάλεια (από κοντά ή τηλεφωνικά).</p><div class="keybox">' + r.key + '</div><button class="btn big sun" onclick="copyText(\'' + r.key + '\')">📋 Αντιγραφή</button><button class="btn big ghost" onclick="closeModal()">Κλείσιμο</button>'); } catch (e) { toast(e.message); }
+}
+
+boot();
+</script>
+</body>
+</html>
