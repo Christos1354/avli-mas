@@ -7,7 +7,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Η Αυλή μας">
 <title>Η Αυλή μας</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏡</text></svg>">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
 <style>
 :root{--terra:#E2725B;--sun:#F4B942;--olive:#6E9B4A;--sky:#4A9BCB;--plum:#9B5D8E;--cream:#FFF8EC;--card:#FFFFFF;--ink:#3B2F2A;--soft:#7A6A60;--line:#F0E2CC}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -525,7 +527,7 @@ var AvliCore = (function () {
 </script>
 <script>
 "use strict";
-var VERSION = "27-11-2026 18:39";
+var VERSION = "27-11-2026 18:48";
 var DAY = 86400000;
 var S = { mode: "live", me: null, view: "avli", ping: null, filters: { avli: "", market: "", cat: "", search: "", area: "" }, draft: null };
 var $app = document.getElementById("app"), $nav = document.getElementById("nav"), $layer = document.getElementById("layer");
