@@ -78,8 +78,8 @@ nav button.plus .ic{background:var(--terra);color:#fff;border-radius:50%;width:5
 .tips{background:#EAF6E0;border:2px solid #CFE6BB}
 .tips summary{font-weight:800;cursor:pointer}
 .tips li{margin:6px 0}
-.hero{text-align:center;padding:26px 10px 6px}
-.hero .sunny{font-size:4.5em}
+.hero{text-align:center;padding:10px 10px 0}
+.hero .sunny{font-size:3.2em}
 .hero h2{font-size:1.8em;margin:4px 0;color:var(--terra)}
 .keybox{font-family:ui-monospace,Menlo,monospace;font-size:1.25em;font-weight:800;background:#FFF1B8;border-radius:14px;padding:14px;text-align:center;letter-spacing:1px;user-select:all;word-break:break-all}
 .modal{position:fixed;inset:0;background:rgba(40,25,15,.6);z-index:50;display:flex;align-items:center;justify-content:center;padding:16px}
@@ -199,7 +199,8 @@ var AvliCore = (function () {
       q(db, "DELETE FROM reports WHERE post_id IN (" + old + ")", [now]),
       q(db, "DELETE FROM posts WHERE expires < ?", [now]),
       q(db, "DELETE FROM messages WHERE created < ?", [now - LIFE]),
-      q(db, "DELETE FROM requests WHERE status != 'pending' AND created < ?", [now - LIFE])
+      q(db, "DELETE FROM requests WHERE status != 'pending' AND created < ?", [now - LIFE]),
+      q(db, "DELETE FROM meta WHERE k LIKE 'ipj:%' AND k NOT LIKE ?", ["%" + new Date(now).toISOString().slice(0, 10)])
     ]);
   }
   var ADMIN = "";
@@ -252,7 +253,8 @@ var AvliCore = (function () {
 
     if (path === "ping") {
       var c = await first(db, "SELECT COUNT(*) n FROM members");
-      return { ok: true, founded: c.n > 0, kinds: KINDS_AVLI, market: KINDS_MARKET, cats: CATS };
+      var op = await first(db, "SELECT v FROM meta WHERE k='open'");
+      return { ok: true, founded: c.n > 0, open: !op || op.v === "1", kinds: KINDS_AVLI, market: KINDS_MARKET, cats: CATS };
     }
     if (path === "setup" && method === "POST") {
       var c2 = await first(db, "SELECT COUNT(*) n FROM members");
@@ -268,11 +270,18 @@ var AvliCore = (function () {
       var nm2 = str(body.name, 40);
       if (nm2.length < 2) throw E(400, "Γράψε το όνομά σου.");
       if (!body.accept) throw E(400, "Χρειάζεται να αποδεχτείς τους κανόνες της Αυλής.");
-      var inv = await first(db, "SELECT * FROM invites WHERE code=?", [code]);
-      if (!inv) throw E(404, "Η πρόσκληση δεν βρέθηκε. Έλεγξε τον κωδικό.");
-      if (inv.used_by) throw E(400, "Αυτή η πρόσκληση έχει ήδη χρησιμοποιηθεί.");
-      var b = await createMember(db, nm2, inv.created_by, false, now, body.country);
-      await run(db, "UPDATE invites SET used_by=?, used=? WHERE code=?", [b.id, now, code]);
+      var inv = code ? await first(db, "SELECT * FROM invites WHERE code=?", [code]) : null;
+      if (inv && inv.used_by) inv = null;
+      if (!inv) {
+        var op2 = await first(db, "SELECT v FROM meta WHERE k='open'");
+        if (op2 && op2.v === "0") throw E(403, "Η Αυλή δέχεται αυτή τη στιγμή νέα μέλη μόνο με πρόσκληση.");
+        var day2 = new Date(now).toISOString().slice(0, 10), ipk = "ipj:" + (env.IP || "x") + ":" + day2;
+        var ipc = await first(db, "SELECT v FROM meta WHERE k=?", [ipk]);
+        if (ipc && Number(ipc.v) >= 10) throw E(429, "Έγιναν πολλές εγγραφές από αυτή τη σύνδεση σήμερα. Δοκίμασε αύριο.");
+        await run(db, "INSERT OR REPLACE INTO meta(k,v) VALUES(?,?)", [ipk, String((ipc ? Number(ipc.v) : 0) + 1)]);
+      }
+      var b = await createMember(db, nm2, inv ? inv.created_by : null, false, now, body.country);
+      if (inv) await run(db, "UPDATE invites SET used_by=?, used=? WHERE code=?", [b.id, now, code]);
       return { key: b.key };
     }
     if (path === "request" && method === "POST") {
@@ -499,6 +508,7 @@ var AvliCore = (function () {
         return {
           requests: await all(db, "SELECT id, name, contact, message, created FROM requests WHERE status='pending' ORDER BY created"),
           reports: await all(db, "SELECT p.id, p.title, p.body, p.hidden, m.name author, COUNT(r.id) n, GROUP_CONCAT(r.reason, ' | ') reasons FROM reports r JOIN posts p ON p.id=r.post_id JOIN members m ON m.id=p.member_id GROUP BY p.id ORDER BY n DESC"),
+          open: !(await first(db, "SELECT v FROM meta WHERE k='open' AND v='0'")),
           members: await all(db, "SELECT a.id, a.name, a.area, a.country, a.is_admin, a.banned, a.invites_left, a.created, b.name invited_by_name, (SELECT COUNT(*) FROM posts WHERE member_id=a.id) posts FROM members a LEFT JOIN members b ON b.id=a.invited_by ORDER BY a.created")
         };
       }
@@ -510,6 +520,7 @@ var AvliCore = (function () {
         await run(db, "UPDATE requests SET status='approved', code=? WHERE id=?", [ac, target]);
         return { code: ac };
       }
+      if (path === "admin/open") { await run(db, "INSERT OR REPLACE INTO meta(k,v) VALUES('open',?)", [body.on ? "1" : "0"]); return { ok: true }; }
       if (path === "admin/reject") { await run(db, "UPDATE requests SET status='rejected' WHERE id=?", [target]); return { ok: true }; }
       if (path === "admin/keep") { await db.batch([q(db, "DELETE FROM reports WHERE post_id=?", [target]), q(db, "UPDATE posts SET hidden=0 WHERE id=?", [target])]); return { ok: true }; }
       if (target === me.id) throw E(400, "Δεν γίνεται για τον εαυτό σου.");
@@ -527,7 +538,7 @@ var AvliCore = (function () {
 </script>
 <script>
 "use strict";
-var VERSION = "27-11-2026 18:48";
+var VERSION = "28-11-2026 09:51";
 var DAY = 86400000;
 var S = { mode: "live", me: null, view: "avli", ping: null, filters: { avli: "", market: "", cat: "", search: "", area: "" }, draft: null };
 var $app = document.getElementById("app"), $nav = document.getElementById("nav"), $layer = document.getElementById("layer");
@@ -885,7 +896,7 @@ function rulesHtml() {
 }
 function renderWelcome() {
   var pend = load("avli_request");
-  var h = demoBanner() + '<div class="hero"><div class="sunny">🌻</div><h2>Καλώς ήρθες!</h2><p>Η Αυλή μας είναι ένας ζεστός, κλειστός κύκλος. Εδώ μοιραζόμαστε σκέψεις, ποιήματα, ιστορίες και φωτογραφίες, και στο παζάρι της παρέας ανταλλάζουμε πράγματα με καλοσύνη. Κάθε χώρα έχει τη δική της αυλή. 🌍</p></div>';
+  var h = demoBanner() + '<div class="hero"><div class="sunny">🌻</div><h2>Καλώς ήρθες!</h2><p>Μια ζεστή παρέα φίλων για σκέψεις, ποιήματα, φωτογραφίες και το παζάρι της παρέας. 🌍</p></div>';
   if (!S.ping.founded) {
     h += '<div class="card"><h3 style="margin-top:0">👑 Ίδρυση της Αυλής</h3><p class="hint">Μόνο την πρώτη φορά, για τον διαχειριστή.</p>' +
       '<label>Κωδικός ιδρυτή</label><input type="password" id="acode" autocomplete="off">' +
@@ -898,29 +909,33 @@ function renderWelcome() {
       '<input type="hidden" id="jcode" value="' + esc(S.inviteCode) + '"><div style="text-align:left">' +
       '<label>Πώς σε λένε; (όπως θα σε βλέπουν οι φίλοι)</label><input type="text" id="jname" maxlength="40">' +
       '<label>Σε ποια χώρα ζεις;</label>' + countrySelect("jcountry", guessCountry()) +
-      '<details style="margin-top:12px"><summary><b>Οι κανόνες της Αυλής</b></summary>' + rulesHtml() + '</details>' +
-      '<label style="font-weight:600"><input type="checkbox" id="jacc" style="width:24px;height:24px;vertical-align:middle"> Συμφωνώ με τους κανόνες</label></div>' +
+      '</div><p class="hint" style="margin-top:12px">Πατώντας «Μπαίνω», συμφωνείς με τους <a href="#" onclick="openInfo();return false">κανόνες της Αυλής</a>: καλοσύνη, σεβασμός και τίποτα ακατάλληλο.</p>' +
       '<button class="btn big olive" onclick="doJoin()">🌻 Μπαίνω στην Αυλή</button></div>' + footer();
     $app.innerHTML = h; return;
   }
-  if (pend) {
-    h += '<div class="card" id="pendcard">⏳ Η αίτησή σου για πρόσκληση περιμένει έγκριση.<br><button class="btn small ghost" onclick="checkRequest(true)">Έλεγχος τώρα</button></div>';
+  var rulesNote = '<p class="hint" style="margin-top:12px">Πατώντας «Μπαίνω», συμφωνείς με τους <a href="#" onclick="openInfo();return false">κανόνες της Αυλής</a>: καλοσύνη, σεβασμός και τίποτα ακατάλληλο.</p>';
+  if (S.ping.open) {
+    h += '<div class="card invite" style="text-align:left"><h2 style="margin:0 0 6px;color:var(--terra);text-align:center">🌻 Έλα στην Αυλή!</h2>' +
+      '<input type="hidden" id="jcode" value="' + esc(S.inviteCode || "") + '">' +
+      '<label>Πώς σε λένε; (όπως θα σε βλέπουν οι φίλοι)</label><input type="text" id="jname" maxlength="40" autocomplete="name">' +
+      '<label>Σε ποια χώρα ζεις;</label>' + countrySelect("jcountry", guessCountry()) + rulesNote +
+      '<button class="btn big olive" onclick="doJoin()">🌻 Μπαίνω στην Αυλή</button></div>';
+  } else {
+    if (pend) h += '<div class="card" id="pendcard">⏳ Η αίτησή σου για πρόσκληση περιμένει έγκριση.<br><button class="btn small ghost" onclick="checkRequest(true)">Έλεγχος τώρα</button></div>';
+    h += '<div class="card"><h3 style="margin-top:0">🎟️ Έχω πρόσκληση</h3>' +
+      '<label>Κωδικός πρόσκλησης (θα τον βρεις στο μήνυμα που σου έστειλαν)</label><input type="text" id="jcode" value="' + esc(S.inviteCode || "") + '">' +
+      '<label>Το όνομά σου (όπως θα σε βλέπουν οι φίλοι)</label><input type="text" id="jname" maxlength="40">' +
+      '<label>Η χώρα σου</label>' + countrySelect("jcountry", guessCountry()) + rulesNote +
+      '<button class="btn big olive" onclick="doJoin()">Μπαίνω στην Αυλή</button></div>';
+    h += '<div class="card"><h3 style="margin-top:0">🙋 Ζήτα πρόσκληση</h3><p class="hint">Δεν έχεις πρόσκληση; Γράψε δυο λόγια. Μόλις εγκριθεί, θα μπεις αυτόματα από αυτή τη συσκευή.</p>' +
+      '<label>Το όνομά σου</label><input type="text" id="rname" maxlength="40">' +
+      '<label>Πώς σε ξέρουμε; (π.χ. «φίλος του Γιώργου», «από το χωριό»)</label><input type="text" id="rmsg" maxlength="300">' +
+      '<label>Τηλέφωνο ή email (προαιρετικά)</label><input type="text" id="rcontact" maxlength="80">' +
+      '<button class="btn big sky" onclick="doRequest()">Στείλε αίτηση</button></div>';
   }
-  h += '<div class="card"><h3 style="margin-top:0">🎟️ Έχω πρόσκληση</h3>' +
-    '<label>Κωδικός πρόσκλησης (θα τον βρεις στο μήνυμα που σου έστειλαν)</label><input type="text" id="jcode" placeholder="π.χ. K7PQ-3MZA" value="' + esc(S.inviteCode || "") + '" autocapitalize="characters">' +
-    '<label>Το όνομά σου (όπως θα σε βλέπουν οι φίλοι)</label><input type="text" id="jname" maxlength="40">' +
-    '<label>Η χώρα σου</label>' + countrySelect("jcountry", guessCountry()) +
-    '<details style="margin-top:12px"><summary><b>Οι κανόνες της Αυλής</b></summary>' + rulesHtml() + '</details>' +
-    '<label style="font-weight:600"><input type="checkbox" id="jacc" style="width:24px;height:24px;vertical-align:middle"> Συμφωνώ με τους κανόνες</label>' +
-    '<button class="btn big olive" onclick="doJoin()">Μπαίνω στην Αυλή</button></div>';
-  h += '<div class="card"><h3 style="margin-top:0">🙋 Ζήτα πρόσκληση</h3><p class="hint">Δεν έχεις πρόσκληση; Γράψε δυο λόγια. Μόλις εγκριθεί, θα μπεις αυτόματα από αυτή τη συσκευή.</p>' +
-    '<label>Το όνομά σου</label><input type="text" id="rname" maxlength="40">' +
-    '<label>Πώς σε ξέρουμε; (π.χ. «φίλος του Γιώργου», «από το χωριό»)</label><input type="text" id="rmsg" maxlength="300">' +
-    '<label>Τηλέφωνο ή email (προαιρετικά)</label><input type="text" id="rcontact" maxlength="80">' +
-    '<button class="btn big sky" onclick="doRequest()">Στείλε αίτηση</button></div>';
-  h += '<div class="card"><h3 style="margin-top:0">🔑 Είσοδος με κωδικό</h3><p class="hint">Για τον διαχειριστή: ο κωδικός σου. Για μέλη που άλλαξαν κινητό: το κλειδί που σου έδωσε ο διαχειριστής.</p>' +
-    '<input type="password" id="lkey" placeholder="ο κωδικός σου" autocapitalize="none" autocomplete="off">' +
-    '<button class="btn big sun" onclick="doLogin()">Είσοδος</button></div>' + footer();
+  h += '<details class="card"><summary style="cursor:pointer;color:var(--soft)">🔑 Είμαι ήδη μέλος και μπαίνω από άλλη συσκευή</summary><p class="hint">Για τον διαχειριστή: ο κωδικός του. Για μέλη: το κλειδί που τους έδωσε ο διαχειριστής.</p>' +
+    '<input type="password" id="lkey" placeholder="κωδικός" autocapitalize="none" autocomplete="off">' +
+    '<button class="btn big sun" onclick="doLogin()">Είσοδος</button></details>' + footer();
   $app.innerHTML = h;
   if (pend) checkRequest(false);
 }
@@ -930,7 +945,7 @@ async function doSetup() {
 }
 async function doJoin() {
   try {
-    var r = await api("join", { body: { code: document.getElementById("jcode").value, name: document.getElementById("jname").value, country: document.getElementById("jcountry").value, accept: document.getElementById("jacc").checked } });
+    var r = await api("join", { body: { code: document.getElementById("jcode").value, name: document.getElementById("jname").value, country: document.getElementById("jcountry").value, accept: true } });
     history.replaceState(null, "", location.pathname); S.inviteCode = null; S.inviteFrom = null; store("avli_request", null);
     await afterJoin(r.key);
   } catch (e) { toast(e.message); }
@@ -1263,7 +1278,9 @@ async function renderAdmin() {
   $app.innerHTML = '<div class="empty">Φορτώνει…</div>';
   try {
     var r = await api("admin");
-    var h = demoBanner() + '<div class="card"><h2 style="margin-top:0">🙋 Αιτήσεις για πρόσκληση (' + r.requests.length + ')</h2>';
+    var h = '<div class="card"><h2 style="margin-top:0">🚪 Είσοδος νέων μελών</h2><p>' + (r.open ? "Τώρα η Αυλή είναι <b>ανοιχτή</b>: όποιος την ανοίγει, γράφει το όνομά του και μπαίνει." : "Τώρα η Αυλή δέχεται νέους <b>μόνο με πρόσκληση</b> ή με αίτηση που εγκρίνεις.") + '</p>' +
+      '<div class="row"><button class="btn ' + (r.open ? "olive" : "ghost") + '" onclick="setOpen(1)">🌻 Ανοιχτή για όλους</button><button class="btn ' + (!r.open ? "plum" : "ghost") + '" onclick="setOpen(0)">🎟️ Μόνο με πρόσκληση</button></div></div>';
+    h += '<div class="card"><h2 style="margin-top:0">🙋 Αιτήσεις για πρόσκληση (' + r.requests.length + ')</h2>';
     h += r.requests.length ? r.requests.map(function (q) {
       return '<div class="cm"><b>' + esc(q.name) + '</b> <span class="when">' + ago(q.created) + '</span><div class="body">' + esc(q.message) + '</div>' + (q.contact ? '<div class="hint">📞 ' + esc(q.contact) + '</div>' : "") +
         '<div class="row" style="margin-top:8px"><button class="btn small olive" onclick="adm(\'approve\',\'' + q.id + '\')">✔ Έγκριση</button><button class="btn small ghost" onclick="adm(\'reject\',\'' + q.id + '\')">✕ Απόρριψη</button></div></div>';
@@ -1283,6 +1300,7 @@ async function renderAdmin() {
     $app.innerHTML = h;
   } catch (e) { toast(e.message); }
 }
+async function setOpen(on) { try { await api("admin/open", { body: { on: !!on } }); toast("Έγινε ✔"); renderAdmin(); } catch (e) { toast(e.message); } }
 async function adm(what, id) { try { await api("admin/" + what, { body: { id: id } }); toast("Έγινε ✔"); await refreshMe(); renderAdmin(); } catch (e) { toast(e.message); } }
 async function adminDelete(id) { if (!confirm("Να σβηστεί η ανάρτηση;")) return; try { await api("delete", { body: { id: id } }); await refreshMe(); renderAdmin(); } catch (e) { toast(e.message); } }
 async function admBan(id, on) { if (on && !confirm("Να αποκλειστεί αυτό το μέλος; Οι αναρτήσεις του θα κρυφτούν.")) return; try { await api("admin/ban", { body: { id: id, on: !!on } }); renderAdmin(); } catch (e) { toast(e.message); } }

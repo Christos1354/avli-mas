@@ -73,7 +73,8 @@ var AvliCore = (function () {
       q(db, "DELETE FROM reports WHERE post_id IN (" + old + ")", [now]),
       q(db, "DELETE FROM posts WHERE expires < ?", [now]),
       q(db, "DELETE FROM messages WHERE created < ?", [now - LIFE]),
-      q(db, "DELETE FROM requests WHERE status != 'pending' AND created < ?", [now - LIFE])
+      q(db, "DELETE FROM requests WHERE status != 'pending' AND created < ?", [now - LIFE]),
+      q(db, "DELETE FROM meta WHERE k LIKE 'ipj:%' AND k NOT LIKE ?", ["%" + new Date(now).toISOString().slice(0, 10)])
     ]);
   }
   var ADMIN = "";
@@ -126,7 +127,8 @@ var AvliCore = (function () {
 
     if (path === "ping") {
       var c = await first(db, "SELECT COUNT(*) n FROM members");
-      return { ok: true, founded: c.n > 0, kinds: KINDS_AVLI, market: KINDS_MARKET, cats: CATS };
+      var op = await first(db, "SELECT v FROM meta WHERE k='open'");
+      return { ok: true, founded: c.n > 0, open: !op || op.v === "1", kinds: KINDS_AVLI, market: KINDS_MARKET, cats: CATS };
     }
     if (path === "setup" && method === "POST") {
       var c2 = await first(db, "SELECT COUNT(*) n FROM members");
@@ -142,11 +144,18 @@ var AvliCore = (function () {
       var nm2 = str(body.name, 40);
       if (nm2.length < 2) throw E(400, "Γράψε το όνομά σου.");
       if (!body.accept) throw E(400, "Χρειάζεται να αποδεχτείς τους κανόνες της Αυλής.");
-      var inv = await first(db, "SELECT * FROM invites WHERE code=?", [code]);
-      if (!inv) throw E(404, "Η πρόσκληση δεν βρέθηκε. Έλεγξε τον κωδικό.");
-      if (inv.used_by) throw E(400, "Αυτή η πρόσκληση έχει ήδη χρησιμοποιηθεί.");
-      var b = await createMember(db, nm2, inv.created_by, false, now, body.country);
-      await run(db, "UPDATE invites SET used_by=?, used=? WHERE code=?", [b.id, now, code]);
+      var inv = code ? await first(db, "SELECT * FROM invites WHERE code=?", [code]) : null;
+      if (inv && inv.used_by) inv = null;
+      if (!inv) {
+        var op2 = await first(db, "SELECT v FROM meta WHERE k='open'");
+        if (op2 && op2.v === "0") throw E(403, "Η Αυλή δέχεται αυτή τη στιγμή νέα μέλη μόνο με πρόσκληση.");
+        var day2 = new Date(now).toISOString().slice(0, 10), ipk = "ipj:" + (env.IP || "x") + ":" + day2;
+        var ipc = await first(db, "SELECT v FROM meta WHERE k=?", [ipk]);
+        if (ipc && Number(ipc.v) >= 10) throw E(429, "Έγιναν πολλές εγγραφές από αυτή τη σύνδεση σήμερα. Δοκίμασε αύριο.");
+        await run(db, "INSERT OR REPLACE INTO meta(k,v) VALUES(?,?)", [ipk, String((ipc ? Number(ipc.v) : 0) + 1)]);
+      }
+      var b = await createMember(db, nm2, inv ? inv.created_by : null, false, now, body.country);
+      if (inv) await run(db, "UPDATE invites SET used_by=?, used=? WHERE code=?", [b.id, now, code]);
       return { key: b.key };
     }
     if (path === "request" && method === "POST") {
@@ -373,6 +382,7 @@ var AvliCore = (function () {
         return {
           requests: await all(db, "SELECT id, name, contact, message, created FROM requests WHERE status='pending' ORDER BY created"),
           reports: await all(db, "SELECT p.id, p.title, p.body, p.hidden, m.name author, COUNT(r.id) n, GROUP_CONCAT(r.reason, ' | ') reasons FROM reports r JOIN posts p ON p.id=r.post_id JOIN members m ON m.id=p.member_id GROUP BY p.id ORDER BY n DESC"),
+          open: !(await first(db, "SELECT v FROM meta WHERE k='open' AND v='0'")),
           members: await all(db, "SELECT a.id, a.name, a.area, a.country, a.is_admin, a.banned, a.invites_left, a.created, b.name invited_by_name, (SELECT COUNT(*) FROM posts WHERE member_id=a.id) posts FROM members a LEFT JOIN members b ON b.id=a.invited_by ORDER BY a.created")
         };
       }
@@ -384,6 +394,7 @@ var AvliCore = (function () {
         await run(db, "UPDATE requests SET status='approved', code=? WHERE id=?", [ac, target]);
         return { code: ac };
       }
+      if (path === "admin/open") { await run(db, "INSERT OR REPLACE INTO meta(k,v) VALUES('open',?)", [body.on ? "1" : "0"]); return { ok: true }; }
       if (path === "admin/reject") { await run(db, "UPDATE requests SET status='rejected' WHERE id=?", [target]); return { ok: true }; }
       if (path === "admin/keep") { await db.batch([q(db, "DELETE FROM reports WHERE post_id=?", [target]), q(db, "UPDATE posts SET hidden=0 WHERE id=?", [target])]); return { ok: true }; }
       if (target === me.id) throw E(400, "Δεν γίνεται για τον εαυτό σου.");
@@ -410,7 +421,7 @@ export async function onRequest(ctx) {
       if (len > 5000000) throw Object.assign(new Error("Το μέγεθος είναι πολύ μεγάλο."), { status: 413 });
       body = await req.json();
     }
-    const out = await AvliCore.handle(req.method, path, body, req.headers.get("X-Key") || "", { DB: ctx.env.DB, ADMIN_CODE: ctx.env.ADMIN_CODE, TRANSLATE_KEY: ctx.env.GOOGLE_TRANSLATE_API_KEY }, query);
+    const out = await AvliCore.handle(req.method, path, body, req.headers.get("X-Key") || "", { DB: ctx.env.DB, ADMIN_CODE: ctx.env.ADMIN_CODE, TRANSLATE_KEY: ctx.env.GOOGLE_TRANSLATE_API_KEY, IP: req.headers.get("CF-Connecting-IP") || "" }, query);
     if (out && out.photo) {
       const m = out.photo.match(/^data:(image\/[a-z+]+);base64,(.*)$/);
       const bin = atob(m[2]); const bytes = new Uint8Array(bin.length);
